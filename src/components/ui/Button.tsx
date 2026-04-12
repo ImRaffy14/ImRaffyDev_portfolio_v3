@@ -1,8 +1,9 @@
 import { motion, type HTMLMotionProps } from 'framer-motion'
-import { forwardRef } from 'react'
+import { forwardRef, type ComponentPropsWithoutRef } from 'react'
+import { stripUiMotion } from '@/config/debugMotion'
 import { cn } from '@/lib/cn'
 
-type ButtonProps = HTMLMotionProps<'button'> & {
+type ButtonProps = ComponentPropsWithoutRef<'button'> & {
   variant?: 'primary' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
 }
@@ -21,22 +22,30 @@ const sizes = {
 } as const
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', type = 'button', ...props }, ref) => (
-    <motion.button
-      ref={ref}
-      type={type}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: 'spring', stiffness: 520, damping: 32 }}
-      className={cn(
-        'inline-flex cursor-pointer items-center justify-center font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:pointer-events-none disabled:opacity-40',
-        'border',
-        variants[variant],
-        sizes[size],
-        className,
-      )}
-      {...props}
-    />
-  ),
+  ({ className, variant = 'primary', size = 'md', type = 'button', ...props }, ref) => {
+    const cls = cn(
+      'inline-flex cursor-pointer items-center justify-center font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:pointer-events-none disabled:opacity-40',
+      'border',
+      variants[variant],
+      sizes[size],
+      className,
+    )
+
+    if (stripUiMotion) {
+      return <button ref={ref} type={type} className={cls} {...props} />
+    }
+
+    return (
+      <motion.button
+        ref={ref}
+        type={type}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: 'spring', stiffness: 520, damping: 32 }}
+        className={cls}
+        {...(props as HTMLMotionProps<'button'>)}
+      />
+    )
+  },
 )
 
 Button.displayName = 'Button'

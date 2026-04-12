@@ -13,4 +13,14 @@ export default defineConfig({
       '@': path.resolve(root, 'src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react-router')) return 'router'
+          if (id.includes('node_modules/framer-motion')) return 'motion'
+        },
+      },
+    },
+  },
 })
