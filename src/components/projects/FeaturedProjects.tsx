@@ -236,7 +236,7 @@ export function FeaturedProjects({ reducedMotion, animateIntro }: FeaturedProjec
       </ul>
       <Link
         to="/projects"
-        className="mt-8 inline-flex h-11 items-center justify-center bg-foreground px-8 text-xs font-semibold tracking-[0.2em] text-background uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="mt-8 inline-flex h-11 items-center justify-center rounded-lg bg-foreground px-8 text-xs font-semibold tracking-[0.2em] text-background uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         View all
       </Link>

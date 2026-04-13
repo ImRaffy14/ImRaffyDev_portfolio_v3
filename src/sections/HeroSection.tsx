@@ -279,7 +279,7 @@ function HeroSectionMotion() {
                     href="#projects"
                     onClick={onHashNav}
                     className={cn(
-                      'inline-flex h-12 min-h-11 cursor-pointer items-center justify-center rounded-xl px-7 text-base font-semibold transition-opacity hover:opacity-90',
+                      'inline-flex h-12 min-h-11 cursor-pointer items-center justify-center rounded-lg px-7 text-base font-semibold transition-opacity hover:opacity-90',
                       'bg-foreground text-background',
                       'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
                     )}

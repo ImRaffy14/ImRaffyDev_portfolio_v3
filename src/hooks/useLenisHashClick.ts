@@ -1,6 +1,6 @@
 import { useLenis } from 'lenis/react'
 import { useCallback } from 'react'
-import { LENIS_ANCHOR_OFFSET } from '@/components/layout/SmoothScrollRoot'
+import { scrollToSection } from '@/lib/scrollToSection'
 
 /** Smooth scroll to hash on home when Lenis is active; otherwise native behavior. */
 export function useLenisHashClick() {
@@ -22,13 +22,7 @@ export function useLenisHashClick() {
       if (!id) return
 
       e.preventDefault()
-      const el = document.getElementById(id)
-      if (el) {
-        lenis.scrollTo(el, {
-          offset: LENIS_ANCHOR_OFFSET,
-          duration: 1.15,
-        })
-      }
+      scrollToSection(id, { lenis })
     },
     [lenis],
   )

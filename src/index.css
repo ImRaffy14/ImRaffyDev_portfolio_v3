@@ -45,7 +45,7 @@
   html {
     position: relative;
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: -7rem;
     -webkit-text-size-adjust: 100%;
   }
 

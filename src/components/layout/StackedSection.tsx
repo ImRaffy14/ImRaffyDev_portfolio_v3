@@ -57,7 +57,7 @@ export function StackedSection({
       ref={sectionRef}
       id={id}
       aria-labelledby={ariaLabelledBy}
-      className="relative isolate min-h-dvh scroll-mt-20"
+      className="relative isolate min-h-dvh scroll-mt-24"
       style={{ zIndex: z }}
     >
       <motion.div

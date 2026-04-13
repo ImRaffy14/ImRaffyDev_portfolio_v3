@@ -2,9 +2,6 @@ import { ReactLenis } from 'lenis/react'
 import type { ReactNode } from 'react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
-/** Matches `scroll-padding-top` in index.css (sticky header clearance). */
-export const LENIS_ANCHOR_OFFSET = -88
-
 type SmoothScrollRootProps = {
   children: ReactNode
 }
