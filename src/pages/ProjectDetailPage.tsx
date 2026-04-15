@@ -1,21 +1,110 @@
 import { motion } from 'framer-motion'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom'
 import { Container } from '@/components/ui/Container'
 import { stripUiMotion } from '@/config/debugMotion'
 import { getProjectBySlug } from '@/data/projects'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-import {
-  ease,
-  motionViewport,
-  springReveal,
-  staggerContainer,
-  staggerItem,
-} from '@/lib/motion'
+import { ease, springReveal } from '@/lib/motion'
+import type { ProjectOrigin } from '@/lib/projectNav'
+
+const backLinkClass =
+  'text-muted hover:text-foreground -mx-1 inline-flex min-h-10 items-center gap-2 rounded-lg px-1 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
+
+const galleryNavBtnClass =
+  'border-border/60 bg-background/85 text-foreground hover:bg-background absolute top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
+
+const GALLERY_REGION_ID = 'project-detail-gallery'
+
+function ProjectGallery({ images }: { images: string[] }) {
+  const [index, setIndex] = useState(0)
+  const count = images.length
+  const multi = count > 1
+
+  const goPrev = useCallback(() => {
+    setIndex((i) => (i <= 0 ? count - 1 : i - 1))
+  }, [count])
+
+  const goNext = useCallback(() => {
+    setIndex((i) => (i >= count - 1 ? 0 : i + 1))
+  }, [count])
+
+  useEffect(() => {
+    if (!multi) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        goPrev()
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        goNext()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [multi, goPrev, goNext])
+
+  if (count === 0) return null
+
+  const src = images[index]!
+
+  return (
+    <div className="relative mt-6" role={multi ? 'region' : undefined} aria-label={multi ? 'Gallery images' : undefined}>
+      <div
+        id={GALLERY_REGION_ID}
+        className="relative overflow-hidden rounded-xl border border-border/60 bg-foreground/2"
+      >
+        <img
+          src={src}
+          alt={multi ? `Gallery image ${index + 1} of ${count}` : 'Gallery image'}
+          className="aspect-video w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+        {multi ? (
+          <>
+            <button
+              type="button"
+              className={`${galleryNavBtnClass} left-2 md:left-3`}
+              onClick={goPrev}
+              aria-controls={GALLERY_REGION_ID}
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="size-6" strokeWidth={2} />
+            </button>
+            <button
+              type="button"
+              className={`${galleryNavBtnClass} right-2 md:right-3`}
+              onClick={goNext}
+              aria-controls={GALLERY_REGION_ID}
+              aria-label="Next image"
+            >
+              <ChevronRight className="size-6" strokeWidth={2} />
+            </button>
+            <p
+              className="text-muted pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-background/85 px-2.5 py-0.5 font-mono text-xs tabular-nums backdrop-blur-sm"
+              aria-live="polite"
+            >
+              {index + 1} / {count}
+            </p>
+          </>
+        ) : null}
+      </div>
+    </div>
+  )
+}
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const reducedMotion = usePrefersReducedMotion()
+  const location = useLocation()
   const project = slug ? getProjectBySlug(slug) : undefined
+
+  const origin = (location.state as { projectOrigin?: ProjectOrigin } | null)?.projectOrigin
+  const backTo = origin === 'archive' ? '/projects' : '/#projects'
+  const backLabel = origin === 'archive' ? 'Back to all projects' : 'Back to featured work'
 
   if (!project) {
     return <Navigate to="/#projects" replace />
@@ -26,11 +115,9 @@ export function ProjectDetailPage() {
       <article className="py-12 md:py-16">
         <Container className="max-w-4xl space-y-10 md:space-y-12">
           <div>
-            <Link
-              to="/#projects"
-              className="text-muted hover:text-foreground text-sm font-medium transition-colors"
-            >
-              ← Back to projects
+            <Link to={backTo} className={backLinkClass}>
+              <ArrowLeft className="size-4 shrink-0" strokeWidth={2.25} aria-hidden />
+              <span>{backLabel}</span>
             </Link>
           </div>
 
@@ -65,22 +152,7 @@ export function ProjectDetailPage() {
             >
               Gallery
             </h2>
-            <ul className="mt-6 grid list-none gap-4 sm:grid-cols-2">
-              {project.gallery.map((src) => (
-                <li
-                  key={src}
-                  className="overflow-hidden rounded-xl border border-border/60 bg-foreground/2"
-                >
-                  <img
-                    src={src}
-                    alt=""
-                    className="aspect-video w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </li>
-              ))}
-            </ul>
+            <ProjectGallery key={project.slug} images={project.gallery} />
           </section>
 
           <section aria-labelledby="highlights-heading">
@@ -131,16 +203,10 @@ export function ProjectDetailPage() {
   return (
     <article className="py-12 md:py-16">
       <Container className="max-w-4xl space-y-10 md:space-y-12">
-        <motion.div
-          initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={t(0)}
-        >
-          <Link
-            to="/#projects"
-            className="text-muted hover:text-foreground text-sm font-medium transition-colors"
-          >
-            ← Back to projects
+        <motion.div initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }} animate={{ opacity: 1, y: 0 }} transition={t(0)}>
+          <Link to={backTo} className={backLinkClass}>
+            <ArrowLeft className="size-4 shrink-0" strokeWidth={2.25} aria-hidden />
+            <span>{backLabel}</span>
           </Link>
         </motion.div>
 
@@ -182,14 +248,8 @@ export function ProjectDetailPage() {
           />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={t(0.14)}
-        >
-          <p className="text-muted max-w-none text-base leading-relaxed md:text-lg">
-            {project.description}
-          </p>
+        <motion.div initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }} animate={{ opacity: 1, y: 0 }} transition={t(0.14)}>
+          <p className="text-muted max-w-none text-base leading-relaxed md:text-lg">{project.description}</p>
         </motion.div>
 
         <motion.section
@@ -198,35 +258,10 @@ export function ProjectDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={t(0.18)}
         >
-          <h2
-            id="gallery-heading"
-            className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl"
-          >
+          <h2 id="gallery-heading" className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl">
             Gallery
           </h2>
-          <motion.ul
-            className="mt-6 grid list-none gap-4 sm:grid-cols-2"
-            variants={staggerContainer(reducedMotion, reducedMotion ? 0 : 0.06, reducedMotion ? 0 : 0.04)}
-            initial="hidden"
-            whileInView="visible"
-            viewport={motionViewport.projectDetail}
-          >
-            {project.gallery.map((src) => (
-              <motion.li
-                key={src}
-                className="overflow-hidden rounded-xl border border-border/60 bg-foreground/2"
-                variants={staggerItem(reducedMotion)}
-              >
-                <img
-                  src={src}
-                  alt=""
-                  className="aspect-video w-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </motion.li>
-            ))}
-          </motion.ul>
+          <ProjectGallery key={project.slug} images={project.gallery} />
         </motion.section>
 
         <motion.section
@@ -235,10 +270,7 @@ export function ProjectDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={t(0.22)}
         >
-          <h2
-            id="highlights-heading"
-            className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl"
-          >
+          <h2 id="highlights-heading" className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl">
             Highlights
           </h2>
           <ul className="text-muted mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed md:text-lg">
@@ -254,10 +286,7 @@ export function ProjectDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={t(0.26)}
         >
-          <h2
-            id="stack-heading"
-            className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl"
-          >
+          <h2 id="stack-heading" className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl">
             Tech stack
           </h2>
           <ul className="mt-4 flex flex-wrap gap-2">

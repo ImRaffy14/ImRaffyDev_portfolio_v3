@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { lazy, Suspense } from 'react'
 import { Navigate, useLocation, useRoutes } from 'react-router-dom'
 import { stripUiMotion } from '@/config/debugMotion'
+import { useScrollTopOnMount } from '@/hooks/useScrollTopOnMount'
 import { HomePage } from '@/pages/HomePage'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { pageTransition, pageVariants } from '@/lib/motion'
@@ -12,12 +13,40 @@ const ProjectsIndexPage = lazy(() =>
 const ProjectDetailPage = lazy(() =>
   import('@/pages/ProjectDetailPage').then((m) => ({ default: m.ProjectDetailPage })),
 )
+const CliPage = lazy(() => import('@/pages/CliPage').then((m) => ({ default: m.CliPage })))
 
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] w-full items-center justify-center px-4">
       <p className="text-muted text-sm">Loading…</p>
     </div>
+  )
+}
+
+function ProjectsIndexRoute() {
+  useScrollTopOnMount()
+  return (
+    <Suspense fallback={<RouteFallback />}>
+      <ProjectsIndexPage />
+    </Suspense>
+  )
+}
+
+function ProjectDetailRoute() {
+  useScrollTopOnMount()
+  return (
+    <Suspense fallback={<RouteFallback />}>
+      <ProjectDetailPage />
+    </Suspense>
+  )
+}
+
+function CliRoute() {
+  useScrollTopOnMount()
+  return (
+    <Suspense fallback={<RouteFallback />}>
+      <CliPage />
+    </Suspense>
   )
 }
 
@@ -30,34 +59,27 @@ export function AnimatedOutlet() {
       { path: '/', element: <HomePage /> },
       {
         path: '/projects',
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <ProjectsIndexPage />
-          </Suspense>
-        ),
+        element: <ProjectsIndexRoute />,
       },
       {
         path: '/projects/:slug',
-        element: (
-          <Suspense fallback={<RouteFallback />}>
-            <ProjectDetailPage />
-          </Suspense>
-        ),
+        element: <ProjectDetailRoute />,
       },
+      { path: '/cli', element: <CliRoute /> },
       { path: '*', element: <Navigate to="/" replace /> },
     ],
     location,
   )
 
   if (stripUiMotion) {
-    return <div className="min-w-0 flex-1">{element}</div>
+    return <div className="flex min-h-0 min-w-0 flex-1 flex-col">{element}</div>
   }
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        className="min-w-0 flex-1"
+        className="flex min-h-0 min-w-0 flex-1 flex-col"
         initial="initial"
         animate="animate"
         exit="exit"

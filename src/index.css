@@ -112,3 +112,27 @@
     }
   }
 }
+
+@layer utilities {
+  @keyframes cli-caret-blink {
+    0%,
+    45% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0.12;
+    }
+  }
+
+  .animate-cli-caret {
+    animation: cli-caret-blink 1.05s steps(1, end) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-cli-caret {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}

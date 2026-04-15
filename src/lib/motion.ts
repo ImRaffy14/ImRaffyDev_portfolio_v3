@@ -2,11 +2,11 @@ import type { Transition, Variants } from 'framer-motion'
 
 /** whileInView presets — no `once`; animations replay on every enter/exit */
 export const motionViewport = {
-  aboutIntro: { amount: 0.12, margin: '-50px' },
-  skillsPanel: { amount: 0.08, margin: '-48px' },
-  contactSplitHeading: { amount: 0.35, margin: '-40px 0px' },
-  workSection: { margin: '-40px', amount: 0.15 },
-  workTimeline: { amount: 0.08, margin: '-10%' },
+  aboutIntro: { amount: 0.12, margin: '-90px' },
+  skillsPanel: { amount: 0.08, margin: '-87px' },
+  contactSplitHeading: { amount: 0.35, margin: '-100px 0px' },
+  workSection: { margin: '-100px', amount: 0.15 },
+  workTimeline: { amount: 0.09, margin: '-10%' },
   contactColumnPrimary: { margin: '-60px', amount: 0.15 },
   standard: { margin: '-40px', amount: 0.12 },
   projectDetail: { amount: 0.12, margin: '-8%' },

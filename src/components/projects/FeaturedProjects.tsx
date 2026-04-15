@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { stripUiMotion } from '@/config/debugMotion'
 import { projects, type Project } from '@/data/projects'
 import { cn } from '@/lib/cn'
+import { projectNavState } from '@/lib/projectNav'
 import {
   ease,
   motionViewport,
@@ -105,6 +106,7 @@ const ShowcaseImage = forwardRef<
 
       <Link
         to={`/projects/${project.slug}`}
+        state={projectNavState.featured}
         className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         aria-label={`Open ${project.title} case study`}
       >
@@ -191,6 +193,7 @@ export function FeaturedProjects({ reducedMotion, animateIntro }: FeaturedProjec
             <li key={p.slug} className="border-b border-border/60 last:border-b-0">
               <Link
                 to={`/projects/${p.slug}`}
+                state={projectNavState.featured}
                 className={cn(
                   'group flex items-center gap-4 py-4 pr-2 transition-colors md:gap-5 md:py-5',
                   'focus-visible:bg-foreground/5 rounded-lg focus-visible:outline-none',
@@ -236,6 +239,7 @@ export function FeaturedProjects({ reducedMotion, animateIntro }: FeaturedProjec
       </ul>
       <Link
         to="/projects"
+        state={projectNavState.featured}
         className="mt-8 inline-flex h-11 items-center justify-center rounded-lg bg-foreground px-8 text-xs font-semibold tracking-[0.2em] text-background uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         View all

@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { useRef } from 'react'
 import { StackedSection } from '@/components/layout/StackedSection'
 import { Container } from '@/components/ui/Container'
 import { stripUiMotion } from '@/config/debugMotion'
@@ -15,6 +16,12 @@ import {
 
 export function WorkExperienceSection() {
   const reducedMotion = usePrefersReducedMotion()
+  const trackRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ['start end', 'end start'],
+  })
+  const glowTop = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
 
   if (stripUiMotion) {
     return (
@@ -122,11 +129,24 @@ export function WorkExperienceSection() {
           </motion.p>
         </motion.div>
 
-        <div className="relative mt-14 md:mt-16">
+        <div ref={trackRef} className="relative mt-14 md:mt-16">
           <div
             className="bg-border/80 absolute top-2 bottom-2 left-[0.6rem] w-px md:left-[0.7rem]"
             aria-hidden
           />
+          {!reducedMotion ? (
+            <motion.div
+              className="pointer-events-none absolute top-2 bottom-2 left-[0.6rem] z-1 w-px md:left-[0.7rem]"
+              aria-hidden
+            >
+              <motion.div
+                className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={{ top: glowTop }}
+              >
+                <div className="h-10 w-px rounded-full bg-accent blur-[2px] shadow-[0_0_14px_3px_var(--accent-muted),0_0_28px_10px_color-mix(in_srgb,var(--accent)_28%,transparent)]" />
+              </motion.div>
+            </motion.div>
+          ) : null}
           <motion.ol
             className="relative list-none space-y-12 md:space-y-14"
             variants={staggerContainer(reducedMotion, reducedMotion ? 0 : 0.08, reducedMotion ? 0 : 0.06)}
