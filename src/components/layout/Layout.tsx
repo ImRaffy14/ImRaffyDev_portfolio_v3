@@ -1,13 +1,12 @@
 import type { ReactNode } from 'react'
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { NavMenuOverlay, NavMenuTrigger } from '@/components/layout/NavMenuOverlay'
 import { PageLoadOverlay } from '@/components/layout/PageLoadOverlay'
 import { SocialDock } from '@/components/layout/SocialDock'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { Container } from '@/components/ui/Container'
 import { site } from '@/data/site'
-import { cn } from '@/lib/cn'
 
 type LayoutProps = {
   children: ReactNode
@@ -15,8 +14,6 @@ type LayoutProps = {
 
 export function Layout({ children }: LayoutProps) {
   const [navOpen, setNavOpen] = useState(false)
-  const { pathname } = useLocation()
-  const cliActive = pathname === '/cli'
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
@@ -33,18 +30,6 @@ export function Layout({ children }: LayoutProps) {
             {site.name}
           </Link>
           <div className="flex items-center gap-2">
-            <Link
-              to="/cli"
-              onClick={() => setNavOpen(false)}
-              aria-current={cliActive ? 'page' : undefined}
-              aria-label="Open command line"
-              className={cn(
-                'hover:bg-foreground/5 text-foreground/85 hover:text-foreground font-mono rounded-lg border border-transparent px-2.5 py-2 text-xs font-medium tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:px-3 md:text-sm',
-                cliActive && 'bg-foreground/8 text-foreground border-border/60',
-              )}
-            >
-              CLI
-            </Link>
             <ThemeToggle />
             <NavMenuTrigger
               open={navOpen}

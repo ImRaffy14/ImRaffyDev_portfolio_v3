@@ -1,6 +1,9 @@
-import { ChevronDown } from 'lucide-react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { lazy, Suspense, useRef, type MouseEvent } from 'react'
+import { ChevronDown, MousePointerClick } from 'lucide-react'
+import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion'
+import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent } from 'react'
+import { createPortal } from 'react-dom'
+import { useLenis } from 'lenis/react'
+import { Terminal } from '@/components/cli/Terminal'
 import { BitsErrorBoundary } from '@/components/bits/BitsErrorBoundary'
 import { HeroCanvasFallback } from '@/components/bits/HeroCanvasFallback'
 import { Container } from '@/components/ui/Container'
@@ -12,7 +15,7 @@ import { useHeroParallax } from '@/hooks/useHeroParallax'
 import { useLenisHashClick } from '@/hooks/useLenisHashClick'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { cn } from '@/lib/cn'
-import { springGentle, springReveal } from '@/lib/motion'
+import { ease, springGentle, springReveal } from '@/lib/motion'
 
 const HeroIDE = lazy(() =>
   import('@/components/three/HeroIDE').then((m) => ({ default: m.HeroIDE })),
@@ -21,10 +24,13 @@ const HeroIDE = lazy(() =>
 function HeroScrollDown({
   reducedMotion,
   onHashNav,
+  hidden,
 }: {
   reducedMotion: boolean
   onHashNav: (e: MouseEvent<HTMLAnchorElement>) => void
+  hidden?: boolean
 }) {
+  if (hidden) return null
   const icon = (
     <ChevronDown className="size-7 sm:size-8" strokeWidth={2.25} aria-hidden />
   )
@@ -62,14 +68,105 @@ function HeroScrollDown({
   )
 }
 
-function HeroIdeColumn({ reducedMotion }: { reducedMotion: boolean }) {
+function HeroIdeColumn({
+  reducedMotion,
+  cliOpen,
+  onCliOpenChange,
+}: {
+  reducedMotion: boolean
+  cliOpen: boolean
+  onCliOpenChange: (open: boolean) => void
+}) {
   const ideSurfaceRef = useRef<HTMLDivElement>(null)
+  const ideScreenTargetRef = useRef<HTMLDivElement>(null)
+  const [ideHovered, setIdeHovered] = useState(false)
   const skipWebGL = useHeroIdeSkipWebGL()
+  const motionOk = !stripUiMotion && !reducedMotion
+  const lenis = useLenis()
+
+  useEffect(() => {
+    if (!cliOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      if (e.defaultPrevented) return
+      onCliOpenChange(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [cliOpen, onCliOpenChange])
+
+  useEffect(() => {
+    if (!cliOpen) return
+    const html = document.documentElement
+    const body = document.body
+    const prevHtmlOverflow = html.style.overflow
+    const prevBodyOverflow = body.style.overflow
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    lenis?.stop?.()
+    return () => {
+      html.style.overflow = prevHtmlOverflow
+      body.style.overflow = prevBodyOverflow
+      lenis?.start?.()
+    }
+  }, [cliOpen, lenis])
+
+  const cliPortal =
+    typeof document !== 'undefined' ? (
+      createPortal(
+        <AnimatePresence>
+          {cliOpen ? (
+            <div key="cli-layer" className="fixed inset-0 z-[100]">
+              <motion.button
+                type="button"
+                aria-label="Close terminal"
+                className="absolute inset-0 cursor-default bg-background/75 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: motionOk ? 0.22 : 0.08, ease }}
+                onClick={() => onCliOpenChange(false)}
+              />
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-3 sm:p-5 md:p-6">
+                <motion.div
+                  className="pointer-events-auto flex max-h-[min(92dvh,900px)] w-full max-w-[min(96vw,1024px)] min-h-[min(58dvh,520px)] flex-col sm:min-h-[min(60dvh,560px)]"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Portfolio CLI"
+                  initial={motionOk ? { y: 64, opacity: 0 } : { y: 0, opacity: 1 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={motionOk ? { y: 64, opacity: 0 } : { opacity: 0 }}
+                  transition={{ duration: motionOk ? 0.36 : 0.12, ease }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div
+                    className={cn(
+                      'flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl p-2',
+                      'border-[3px] border-zinc-600 bg-gradient-to-b from-zinc-700/95 to-zinc-900/98',
+                      'shadow-[0_28px_64px_-16px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.07)]',
+                      'ring-1 ring-zinc-950/80',
+                    )}
+                  >
+                    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md border border-zinc-950 bg-zinc-950 shadow-[inset_0_2px_8px_rgba(0,0,0,0.45)]">
+                      <Terminal embedded onClose={() => onCliOpenChange(false)} />
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          ) : null}
+        </AnimatePresence>,
+        document.body,
+      )
+    ) : null
 
   return (
     <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
+      {cliPortal}
       <div
         ref={ideSurfaceRef}
+        onPointerEnter={() => setIdeHovered(true)}
+        onPointerLeave={() => setIdeHovered(false)}
         className="relative h-[min(62vh,520px)] w-full max-w-2xl min-h-[300px] bg-transparent lg:h-[min(82vh,720px)] lg:max-w-none lg:min-h-[440px]"
       >
         {reducedMotion || skipWebGL ? (
@@ -77,10 +174,86 @@ function HeroIdeColumn({ reducedMotion }: { reducedMotion: boolean }) {
         ) : (
           <BitsErrorBoundary fallback={<HeroCanvasFallback />}>
             <Suspense fallback={<HeroCanvasFallback />}>
-              <HeroIDE
-                reducedMotion={reducedMotion}
-                containerRef={ideSurfaceRef}
-              />
+              <>
+                <HeroIDE
+                  reducedMotion={reducedMotion}
+                  hovered={ideHovered}
+                  cliActive={cliOpen}
+                  containerRef={ideSurfaceRef}
+                  screenTargetRef={ideScreenTargetRef}
+                />
+                <div
+                  ref={ideScreenTargetRef}
+                  {...(!cliOpen
+                    ? { 'data-target-cursor': true, 'data-target-cursor-live': true }
+                    : {})}
+                  role={cliOpen ? undefined : 'button'}
+                  tabIndex={cliOpen ? undefined : 0}
+                  aria-label={cliOpen ? undefined : 'Open terminal on laptop'}
+                  className={cn(
+                    'absolute inset-0 z-5 flex min-h-0 flex-col bg-transparent',
+                    !cliOpen && 'cursor-pointer',
+                  )}
+                  onClick={
+                    cliOpen
+                      ? undefined
+                      : () => {
+                          onCliOpenChange(true)
+                        }
+                  }
+                  onKeyDown={
+                    cliOpen
+                      ? undefined
+                      : (e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            onCliOpenChange(true)
+                          }
+                        }
+                  }
+                >
+                  {!cliOpen && !(reducedMotion || skipWebGL) ? (
+                    <div
+                      className="pointer-events-none flex min-h-0 flex-1 flex-col items-end justify-center pr-[6%] pl-3 sm:pr-[8%]"
+                      aria-hidden
+                    >
+                      {motionOk ? (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.4, ease }}
+                        >
+                          <motion.div
+                            className="flex max-w-[min(100%,11rem)] items-center gap-1.5 rounded-full border border-white/15 bg-zinc-950/82 px-2.5 py-1.5 text-[10px] font-medium tracking-wide text-zinc-100 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-sm sm:max-w-none sm:px-3 sm:text-[11px] md:text-xs"
+                            animate={{ scale: [1, 1.06, 1], y: [0, -3, 0] }}
+                            transition={{
+                              duration: 2.1,
+                              repeat: Infinity,
+                              ease: 'easeInOut',
+                            }}
+                          >
+                            <MousePointerClick
+                              className="size-3 shrink-0 text-accent sm:size-3.5 md:size-4"
+                              strokeWidth={2}
+                              aria-hidden
+                            />
+                            <span>Click me</span>
+                          </motion.div>
+                        </motion.div>
+                      ) : (
+                        <div className="flex max-w-[min(100%,11rem)] items-center gap-1.5 rounded-full border border-white/15 bg-zinc-950/82 px-2.5 py-1.5 text-[10px] font-medium tracking-wide text-zinc-100 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-sm sm:max-w-none sm:px-3 sm:text-[11px] md:text-xs">
+                          <MousePointerClick
+                            className="size-3 shrink-0 text-accent sm:size-3.5 md:size-4"
+                            strokeWidth={2}
+                            aria-hidden
+                          />
+                          <span>Click me</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              </>
             </Suspense>
           </BitsErrorBoundary>
         )}
@@ -89,9 +262,22 @@ function HeroIdeColumn({ reducedMotion }: { reducedMotion: boolean }) {
   )
 }
 
-function HeroSectionStrip() {
+type HeroRouteCliProps = {
+  cliOpenFromRoute?: boolean
+  onCliRouteConsumed?: () => void
+}
+
+function HeroSectionStrip({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCliProps) {
   const reducedMotion = usePrefersReducedMotion()
   const onHashNav = useLenisHashClick()
+  const [cliOpen, setCliOpen] = useState(false)
+
+  useEffect(() => {
+    if (cliOpenFromRoute) {
+      setCliOpen(true)
+      onCliRouteConsumed?.()
+    }
+  }, [cliOpenFromRoute, onCliRouteConsumed])
 
   return (
     <section
@@ -143,21 +329,37 @@ function HeroSectionStrip() {
                 </div>
               </div>
             </div>
-            <HeroIdeColumn reducedMotion={reducedMotion} />
+            <HeroIdeColumn
+              reducedMotion={reducedMotion}
+              cliOpen={cliOpen}
+              onCliOpenChange={setCliOpen}
+            />
           </div>
         </Container>
       </div>
-      <HeroScrollDown reducedMotion={reducedMotion} onHashNav={onHashNav} />
+      <HeroScrollDown
+        reducedMotion={reducedMotion}
+        onHashNav={onHashNav}
+        hidden={cliOpen}
+      />
     </section>
   )
 }
 
-function HeroSectionMotion() {
+function HeroSectionMotion({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCliProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const reducedMotion = usePrefersReducedMotion()
   const onHashNav = useLenisHashClick()
   const coarsePointer = useCoarsePointer()
   const parallaxY = useHeroParallax(sectionRef, !reducedMotion)
+  const [cliOpen, setCliOpen] = useState(false)
+
+  useEffect(() => {
+    if (cliOpenFromRoute) {
+      setCliOpen(true)
+      onCliRouteConsumed?.()
+    }
+  }, [cliOpenFromRoute, onCliRouteConsumed])
 
   const rawX = useMotionValue(0)
   const rawY = useMotionValue(0)
@@ -293,15 +495,27 @@ function HeroSectionMotion() {
               </motion.div>
             </div>
 
-            <HeroIdeColumn reducedMotion={reducedMotion} />
+            <HeroIdeColumn
+              reducedMotion={reducedMotion}
+              cliOpen={cliOpen}
+              onCliOpenChange={setCliOpen}
+            />
           </div>
         </Container>
       </div>
-      <HeroScrollDown reducedMotion={reducedMotion} onHashNav={onHashNav} />
+      <HeroScrollDown
+        reducedMotion={reducedMotion}
+        onHashNav={onHashNav}
+        hidden={cliOpen}
+      />
     </section>
   )
 }
 
-export function HeroSection() {
-  return stripUiMotion ? <HeroSectionStrip /> : <HeroSectionMotion />
+export function HeroSection({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCliProps = {}) {
+  return stripUiMotion ? (
+    <HeroSectionStrip cliOpenFromRoute={cliOpenFromRoute} onCliRouteConsumed={onCliRouteConsumed} />
+  ) : (
+    <HeroSectionMotion cliOpenFromRoute={cliOpenFromRoute} onCliRouteConsumed={onCliRouteConsumed} />
+  )
 }

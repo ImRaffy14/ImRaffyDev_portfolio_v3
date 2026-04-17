@@ -52,8 +52,11 @@ export function cliHelpLines(): string[] {
     '  experience  Work history snapshot',
     '  contact     Contact details',
     '  help        Show this list',
+    '  clear       Clear transcript (banner returns)',
+    '  theme       Change CLI colors (alias: colors)',
+    '  games       Desktop mini-games (snake, pong, tetris)',
     '  exit        Return to the portfolio',
     '',
-    'Tip: command names are case-insensitive.',
+    'Tip: command names are case-insensitive. Try theme list',
   ]
 }

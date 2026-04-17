@@ -1,4 +1,5 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useScrollToHash } from '@/hooks/useScrollToHash'
 import { HeroSection } from '@/sections/HeroSection'
 
@@ -17,10 +18,23 @@ const ContactSection = lazy(() =>
 
 export function HomePage() {
   useScrollToHash()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [cliFromRoute, setCliFromRoute] = useState(false)
+
+  const onCliRouteConsumed = useCallback(() => setCliFromRoute(false), [])
+
+  useEffect(() => {
+    const s = location.state as { openCli?: boolean } | undefined
+    if (s?.openCli) {
+      setCliFromRoute(true)
+      navigate('/', { replace: true, state: {} })
+    }
+  }, [location.state, navigate])
 
   return (
     <>
-      <HeroSection />
+      <HeroSection cliOpenFromRoute={cliFromRoute} onCliRouteConsumed={onCliRouteConsumed} />
 
       <Suspense fallback={null}>
         <AboutSkillsSection />

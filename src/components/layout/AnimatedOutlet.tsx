@@ -13,7 +13,6 @@ const ProjectsIndexPage = lazy(() =>
 const ProjectDetailPage = lazy(() =>
   import('@/pages/ProjectDetailPage').then((m) => ({ default: m.ProjectDetailPage })),
 )
-const CliPage = lazy(() => import('@/pages/CliPage').then((m) => ({ default: m.CliPage })))
 
 function RouteFallback() {
   return (
@@ -42,12 +41,7 @@ function ProjectDetailRoute() {
 }
 
 function CliRoute() {
-  useScrollTopOnMount()
-  return (
-    <Suspense fallback={<RouteFallback />}>
-      <CliPage />
-    </Suspense>
-  )
+  return <Navigate to="/" replace state={{ openCli: true }} />
 }
 
 export function AnimatedOutlet() {

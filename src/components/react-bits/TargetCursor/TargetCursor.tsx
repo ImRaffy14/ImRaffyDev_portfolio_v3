@@ -13,6 +13,7 @@ export const defaultClickableTargetSelector = [
   'textarea:not(:disabled)',
   'label[for]',
   'summary',
+  '[data-target-cursor]',
 ].join(', ')
 
 export type TargetCursorProps = {
@@ -39,6 +40,7 @@ export default function TargetCursor({
   const targetCornerPositionsRef = useRef<{ x: number; y: number }[] | null>(null)
   const tickerFnRef = useRef<(() => void) | null>(null)
   const activeStrengthRef = useRef(0)
+  const activeTargetRef = useRef<Element | null>(null)
 
   const reducedMotion = usePrefersReducedMotion()
   const isMobile = useMemo(() => {
@@ -109,7 +111,26 @@ export default function TargetCursor({
 
     createSpinTimeline()
 
+    const refreshCornersFromRect = (target: Element) => {
+      const rect = target.getBoundingClientRect()
+      const { borderWidth, cornerSize } = constants
+      targetCornerPositionsRef.current = [
+        { x: rect.left - borderWidth, y: rect.top - borderWidth },
+        { x: rect.right + borderWidth - cornerSize, y: rect.top - borderWidth },
+        {
+          x: rect.right + borderWidth - cornerSize,
+          y: rect.bottom + borderWidth - cornerSize,
+        },
+        { x: rect.left - borderWidth, y: rect.bottom + borderWidth - cornerSize },
+      ]
+    }
+
     const tickerFn = () => {
+      const live = activeTargetRef.current
+      if (live instanceof HTMLElement && live.hasAttribute('data-target-cursor-live')) {
+        refreshCornersFromRect(live)
+      }
+
       if (!targetCornerPositionsRef.current || !cursorRef.current || !cornersRef.current) {
         return
       }
@@ -202,6 +223,7 @@ export default function TargetCursor({
       }
 
       activeTarget = target
+      activeTargetRef.current = target
       const corners = Array.from(cornersRef.current)
       corners.forEach((corner) => gsap.killTweensOf(corner))
 
@@ -209,17 +231,9 @@ export default function TargetCursor({
       spinTl.current?.pause()
       gsap.set(cursorRef.current, { rotation: 0 })
 
-      const rect = target.getBoundingClientRect()
-      const { borderWidth, cornerSize } = constants
+      refreshCornersFromRect(target)
       const cursorX = gsap.getProperty(cursorRef.current, 'x') as number
       const cursorY = gsap.getProperty(cursorRef.current, 'y') as number
-
-      targetCornerPositionsRef.current = [
-        { x: rect.left - borderWidth, y: rect.top - borderWidth },
-        { x: rect.right + borderWidth - cornerSize, y: rect.top - borderWidth },
-        { x: rect.right + borderWidth - cornerSize, y: rect.bottom + borderWidth - cornerSize },
-        { x: rect.left - borderWidth, y: rect.bottom + borderWidth - cornerSize },
-      ]
 
       isActiveRef.current = true
       if (tickerFnRef.current) gsap.ticker.add(tickerFnRef.current)
@@ -247,6 +261,7 @@ export default function TargetCursor({
         targetCornerPositionsRef.current = null
         gsap.set(activeStrengthRef, { current: 0, overwrite: true })
         activeTarget = null
+        activeTargetRef.current = null
 
         if (cornersRef.current) {
           const cornerEls = Array.from(cornersRef.current)
@@ -323,6 +338,7 @@ export default function TargetCursor({
       isActiveRef.current = false
       targetCornerPositionsRef.current = null
       activeStrengthRef.current = 0
+      activeTargetRef.current = null
       if (resumeTimeout) clearTimeout(resumeTimeout)
     }
   }, [

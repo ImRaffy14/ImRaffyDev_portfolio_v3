@@ -3,43 +3,49 @@ import { type RefObject, useEffect, useMemo, useRef } from 'react'
 import { useHeroIdeSurfaceActive } from '@/hooks/useHeroIdeSurfaceActive'
 import * as THREE from 'three'
 
-const SOURCE = `
-export const getHome = (req, res) => {
-  return res.json({
-    message: 'Welcome to my portfolio',
-    stack: 'Backend API Node.js',
-    status: 'active'
-  })
+const SOURCE = `#!/usr/bin/env bash
+# Portfolio CLI — same commands as the live terminal below
+set -euo pipefail
+
+export PORTFOLIO_ROOT="$HOME/projects/imraffydev"
+export PATH="$PORTFOLIO_ROOT/bin:$PATH"
+
+echo "● stack: TypeScript · React · Node"
+
+help() {
+  echo "try: help | about | projects | contact | exit"
 }
 
-export const portfolioService = () => {
-  return {
-    name: 'Raffy Dev Portfolio',
-    type: 'backend-driven system',
-    mode: 'production-ready mock'
-  }
-}`
+if [[ -f "$HOME/.env.local" ]]; then
+  source "$HOME/.env.local"
+fi
+
+read -rp "$ " __cmd`
 
 const DESIGN_W = 1024
 const DESIGN_H = 640
 
-const KW =
-  /\b(?:export|function|const|return|import|from|default|typeof|useState|type|interface|button|div)\b/
+const BASH_KW =
+  /\b(?:alias|basename|bash|case|cd|chmod|command|cp|declare|dirname|do|done|echo|elif|else|env|esac|export|false|fi|for|function|grep|help|if|in|local|mkdir|mv|printf|pwd|read|readonly|return|rm|select|set|sh|source|sudo|then|time|true|type|umask|until|which|while)\b/
 
 const TOKEN =
-  /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b(?:export|function|const|return|import|from|default|typeof|useState|type|interface|button|div)\b)|(\b\d+\b)|(\{|\}|\(|\)|\[|\]|<|>|;|,|\.|:|\/|=)|(\s+)|(\w+)/g
+  /(#.*)|("(?:[^"\\]|\\.)*"|'[^']*')|(\b(?:alias|basename|bash|case|cd|chmod|command|cp|declare|dirname|do|done|echo|elif|else|env|esac|export|false|fi|for|function|grep|help|if|in|local|mkdir|mv|printf|pwd|read|readonly|return|rm|select|set|sh|source|sudo|then|time|true|type|umask|until|which|while)\b)|(\b\d+\b)|(\[\[|\]\]|&&|\|\||\{|\}|\(|\)|\[|\]|<|>|;|&|\||=|!|:|\.|\/|\$|\`|~|\*|\+|\-|@)|(\s+)|(\w+)/g
 
 function tokenColor(tok: string): string {
   if (/^\s+$/.test(tok)) return '#3b3b3b'
-  if (/^["']/.test(tok)) return '#c3e88d'
-  if (KW.test(tok)) return '#c792ea'
+  if (tok.startsWith('#')) return '#6a9955'
+  if (/^["']/.test(tok)) return '#ce9178'
+  if (BASH_KW.test(tok)) return '#c792ea'
+  if (/^\d+$/.test(tok)) return '#b5cea8'
   if (
     tok.length > 0 &&
-    Array.from(tok).every((c) => '()[]{}<>;,./:=+-*|&!'.includes(c))
+    Array.from(tok).every((c) =>
+      '()[]{}<>;,./:=+-*|&!$`~@#'.includes(c),
+    )
   ) {
     return '#89ddff'
   }
-  return '#d6deeb'
+  return '#d4d4d4'
 }
 
 function drawLine(
@@ -97,9 +103,10 @@ function drawIDE(
   ctx.fillStyle = '#cccccc'
   ctx.font = '500 18px ui-monospace, Consolas, monospace'
   ctx.textBaseline = 'middle'
+  const title = '~/portfolio.sh'
   ctx.fillText(
-    'App.tsx',
-    DESIGN_W / 2 - ctx.measureText('App.tsx').width / 2,
+    title,
+    DESIGN_W / 2 - ctx.measureText(title).width / 2,
     titleH / 2,
   )
 
@@ -128,7 +135,7 @@ function drawIDE(
       caretX += ctx.measureText(cm[0]).width
     }
     const caretY = titleH + 28 + (lines.length - 1) * lh
-    ctx.fillStyle = '#c792ea'
+    ctx.fillStyle = '#4ec9b0'
     ctx.fillRect(caretX, caretY - fs / 2, 2.5, fs)
   }
 
@@ -138,6 +145,17 @@ function drawIDE(
 const POINTER_SAMPLE_MS = 33
 const CARET_BLINK_MS = 520
 const DPR_CAP = 1.35
+
+const SCREEN_PLANE_W = 2.42
+const SCREEN_PLANE_H = 1.51
+const PLANE_HW = SCREEN_PLANE_W / 2
+const PLANE_HH = SCREEN_PLANE_H / 2
+const PLANE_CORNERS = [
+  new THREE.Vector3(-PLANE_HW, PLANE_HH, 0),
+  new THREE.Vector3(PLANE_HW, PLANE_HH, 0),
+  new THREE.Vector3(PLANE_HW, -PLANE_HH, 0),
+  new THREE.Vector3(-PLANE_HW, -PLANE_HH, 0),
+]
 
 function useIdeCodeCanvasSize(): { w: number; h: number } {
   return useMemo(() => {
@@ -150,6 +168,9 @@ function useIdeCodeCanvasSize(): { w: number; h: number } {
 type IDEInnerProps = {
   reducedMotion: boolean
   active: boolean
+  hovered: boolean
+  cliActive: boolean
+  screenTargetRef?: RefObject<HTMLDivElement | null>
   canvas: HTMLCanvasElement
   texture: THREE.CanvasTexture
 }
@@ -157,18 +178,25 @@ type IDEInnerProps = {
 function IDEInner({
   reducedMotion,
   active,
+  hovered,
+  cliActive,
+  screenTargetRef,
   canvas,
   texture,
 }: IDEInnerProps) {
   const group = useRef<THREE.Group>(null)
+  const planeRef = useRef<THREE.Mesh>(null)
+  const projScratch = useRef(new THREE.Vector3())
   const acc = useRef(0)
   const floatT = useRef(0)
+  const hoverBlend = useRef(0)
   const activeRef = useRef(active)
+  const hoveredRef = useRef(hovered)
   const lastN = useRef(-1)
   const lastCaretPhase = useRef(-1)
   const pointerSmoothed = useRef({ x: 0, y: 0 })
   const lastPointerSample = useRef(0)
-  const { pointer } = useThree()
+  const { pointer, camera, gl } = useThree()
 
   const ctx = useMemo(() => {
     const c = canvas.getContext('2d')
@@ -177,13 +205,33 @@ function IDEInner({
   }, [canvas])
 
   activeRef.current = active
+  hoveredRef.current = hovered
+  const cliActiveRef = useRef(cliActive)
+  cliActiveRef.current = cliActive
 
   useEffect(() => {
     if (active) invalidate()
   }, [active])
 
   useFrame((_, delta) => {
-    if (!activeRef.current) return
+    if (!activeRef.current) {
+      const el = screenTargetRef?.current
+      if (el) el.style.pointerEvents = 'none'
+      return
+    }
+
+    if (cliActiveRef.current) {
+      const g = group.current
+      if (g) {
+        hoverBlend.current = 1
+        g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, 0, 0.12)
+        g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, 0, 0.12)
+        invalidate()
+      }
+      const el = screenTargetRef?.current
+      if (el) el.style.pointerEvents = 'none'
+      return
+    }
 
     if (reducedMotion) {
       acc.current = SOURCE.length
@@ -220,6 +268,8 @@ function IDEInner({
 
     const g = group.current
     if (!g) {
+      const el = screenTargetRef?.current
+      if (el) el.style.pointerEvents = 'none'
       invalidate()
       return
     }
@@ -229,20 +279,81 @@ function IDEInner({
     const baseX = 0.42 + py * (reducedMotion ? 0 : 0.1)
     const baseY = -0.32 + px * (reducedMotion ? 0 : -0.12)
 
+    const hb = hoveredRef.current ? 1 : 0
+    hoverBlend.current = THREE.MathUtils.lerp(
+      hoverBlend.current,
+      hb,
+      Math.min(1, delta * 9),
+    )
+    const f = hoverBlend.current
+
     if (reducedMotion) {
-      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, baseX, 0.08)
-      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, baseY, 0.08)
+      const tx = THREE.MathUtils.lerp(baseX, 0, f)
+      const ty = THREE.MathUtils.lerp(baseY, 0, f)
+      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, tx, 0.08)
+      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, ty, 0.08)
       invalidate()
+      syncScreenTargetOverlay()
       return
     }
 
     floatT.current += delta
     const bob = Math.sin(floatT.current * 0.85) * 0.035
     const sway = Math.cos(floatT.current * 0.5) * 0.025
-    g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, baseX + bob, 0.06)
-    g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, baseY + sway, 0.06)
+    const tx = THREE.MathUtils.lerp(baseX + bob, 0, f)
+    const ty = THREE.MathUtils.lerp(baseY + sway, 0, f)
+    g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, tx, 0.06)
+    g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, ty, 0.06)
     invalidate()
+    syncScreenTargetOverlay()
   })
+
+  function syncScreenTargetOverlay() {
+    const el = screenTargetRef?.current
+    const plane = planeRef.current
+    const g = group.current
+    if (!el || !plane || !g) return
+
+    g.updateMatrixWorld(true)
+    plane.updateMatrixWorld(true)
+
+    const canvasEl = gl.domElement
+    const r = canvasEl.getBoundingClientRect()
+    const v = projScratch.current
+    let minX = Infinity
+    let minY = Infinity
+    let maxX = -Infinity
+    let maxY = -Infinity
+
+    for (let i = 0; i < 4; i++) {
+      v.copy(PLANE_CORNERS[i]!).applyMatrix4(plane.matrixWorld).project(camera)
+      const sx = (v.x * 0.5 + 0.5) * r.width + r.left
+      const sy = (-v.y * 0.5 + 0.5) * r.height + r.top
+      if (!Number.isFinite(sx) || !Number.isFinite(sy)) {
+        el.style.pointerEvents = 'none'
+        return
+      }
+      minX = Math.min(minX, sx)
+      minY = Math.min(minY, sy)
+      maxX = Math.max(maxX, sx)
+      maxY = Math.max(maxY, sy)
+    }
+
+    const w = maxX - minX
+    const h = maxY - minY
+    if (w < 2 || h < 2 || w > 12000 || h > 12000) {
+      el.style.pointerEvents = 'none'
+      return
+    }
+
+    el.style.position = 'fixed'
+    el.style.left = `${minX}px`
+    el.style.top = `${minY}px`
+    el.style.width = `${w}px`
+    el.style.height = `${h}px`
+    el.style.zIndex = cliActiveRef.current ? '50' : '5'
+    el.style.pointerEvents = 'auto'
+  }
 
   return (
     <group ref={group} position={[-0.05, 0.06, 0]} scale={0.8}>
@@ -250,8 +361,8 @@ function IDEInner({
         <boxGeometry args={[2.58, 1.65, 0.14]} />
         <meshLambertMaterial color="#2d2d32" />
       </mesh>
-      <mesh position={[0, 0, 0.03]}>
-        <planeGeometry args={[2.42, 1.51]} />
+      <mesh ref={planeRef} position={[0, 0, 0.03]}>
+        <planeGeometry args={[SCREEN_PLANE_W, SCREEN_PLANE_H]} />
         <meshBasicMaterial map={texture} toneMapped={false} />
       </mesh>
     </group>
@@ -260,10 +371,19 @@ function IDEInner({
 
 type HeroIDEProps = {
   reducedMotion: boolean
+  hovered: boolean
+  cliActive: boolean
   containerRef: RefObject<HTMLDivElement | null>
+  screenTargetRef?: RefObject<HTMLDivElement | null>
 }
 
-export function HeroIDE({ reducedMotion, containerRef }: HeroIDEProps) {
+export function HeroIDE({
+  reducedMotion,
+  hovered,
+  cliActive,
+  containerRef,
+  screenTargetRef,
+}: HeroIDEProps) {
   const { w: codeW, h: codeH } = useIdeCodeCanvasSize()
   const active = useHeroIdeSurfaceActive(containerRef)
 
@@ -306,6 +426,9 @@ export function HeroIDE({ reducedMotion, containerRef }: HeroIDEProps) {
       <IDEInner
         reducedMotion={reducedMotion}
         active={active}
+        hovered={hovered}
+        cliActive={cliActive}
+        screenTargetRef={screenTargetRef}
         canvas={canvas}
         texture={texture}
       />
