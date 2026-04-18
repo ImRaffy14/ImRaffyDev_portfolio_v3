@@ -19,7 +19,7 @@ import {
 const featuredWorkBackground = (
   <div className="relative min-h-full w-full">
     <div className="from-accent/8 absolute inset-0 bg-linear-to-bl via-transparent to-transparent dark:from-accent/5" />
-    <div className="bg-foreground/3 dark:bg-foreground/5 absolute bottom-[12%] -left-[10%] h-[min(38vh,320px)] w-[min(42vw,340px)] rounded-full" />
+    <div className="hidden bg-foreground/3 dark:bg-foreground/5 absolute bottom-[12%] -left-[10%] h-[min(38vh,320px)] w-[min(42vw,340px)] rounded-full lg:block" />
   </div>
 )
 

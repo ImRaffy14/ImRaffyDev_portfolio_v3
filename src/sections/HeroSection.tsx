@@ -25,17 +25,29 @@ function HeroScrollDown({
   reducedMotion,
   onHashNav,
   hidden,
+  className,
+  inline,
 }: {
   reducedMotion: boolean
   onHashNav: (e: MouseEvent<HTMLAnchorElement>) => void
   hidden?: boolean
+  className?: string
+  inline?: boolean
 }) {
   if (hidden) return null
   const icon = (
     <ChevronDown className="size-7 sm:size-8" strokeWidth={2.25} aria-hidden />
   )
   return (
-    <div className="pointer-events-auto absolute bottom-20 left-0 right-0 z-20 flex justify-center md:bottom-24">
+    <div
+      className={cn(
+        'pointer-events-auto z-20 flex justify-center',
+        inline
+          ? 'relative w-full shrink-0'
+          : 'absolute bottom-20 left-0 right-0 md:bottom-24',
+        className,
+      )}
+    >
       <a
         href="#about"
         onClick={onHashNav}
@@ -161,7 +173,7 @@ function HeroIdeColumn({
     ) : null
 
   return (
-    <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
+    <div className="order-2 flex justify-center lg:order-2 lg:justify-end">
       {cliPortal}
       <div
         ref={ideSurfaceRef}
@@ -297,11 +309,11 @@ function HeroSectionStrip({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCli
         />
       </div>
 
-      <div className="relative z-10 flex min-h-dvh flex-col justify-center pt-20 pb-24 md:pt-24 md:pb-32">
+      <div className="relative z-10 flex flex-col pt-20 pb-8 md:pt-24 md:pb-12 lg:pb-32 lg:min-h-dvh lg:justify-center">
         <Container>
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-10 xl:gap-10">
-            <div className="order-2 text-center lg:order-1 lg:text-left">
-              <div>
+          <div className="grid items-center gap-4 lg:grid-cols-2 lg:gap-10">
+            <div className="order-1 relative flex text-center max-lg:min-h-[calc(100dvh-5rem)] max-lg:flex-col max-lg:justify-center max-lg:gap-8 md:max-lg:min-h-[calc(100dvh-6rem)] md:max-lg:gap-10 lg:order-1 lg:block lg:min-h-0 lg:text-left">
+              <div className="max-lg:w-full">
                 <p className="text-muted text-sm font-medium tracking-wide md:text-base">
                   {site.hero.greeting}
                 </p>
@@ -328,6 +340,14 @@ function HeroSectionStrip({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCli
                   </a>
                 </div>
               </div>
+              <div className="lg:hidden">
+                <HeroScrollDown
+                  reducedMotion={reducedMotion}
+                  onHashNav={onHashNav}
+                  hidden={cliOpen}
+                  inline
+                />
+              </div>
             </div>
             <HeroIdeColumn
               reducedMotion={reducedMotion}
@@ -337,11 +357,13 @@ function HeroSectionStrip({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCli
           </div>
         </Container>
       </div>
-      <HeroScrollDown
-        reducedMotion={reducedMotion}
-        onHashNav={onHashNav}
-        hidden={cliOpen}
-      />
+      <div className="hidden lg:block">
+        <HeroScrollDown
+          reducedMotion={reducedMotion}
+          onHashNav={onHashNav}
+          hidden={cliOpen}
+        />
+      </div>
     </section>
   )
 }
@@ -410,11 +432,11 @@ function HeroSectionMotion({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCl
         />
       </motion.div>
 
-      <div className="relative z-10 flex min-h-dvh flex-col justify-center pt-20 pb-24 md:pt-24 md:pb-32">
+      <div className="relative z-10 flex flex-col pt-20 pb-8 md:pt-24 md:pb-12 lg:pb-32 lg:min-h-dvh lg:justify-center">
         <Container>
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-10 xl:gap-10">
-            <div className="order-2 text-center lg:order-1 lg:text-left">
-              <motion.div style={{ x: nudgeX, y: nudgeY }}>
+          <div className="grid items-center gap-4 lg:grid-cols-2 lg:gap-10 xl:gap-10">
+            <div className="order-1 relative flex text-center max-lg:min-h-[calc(100dvh-5rem)] max-lg:flex-col max-lg:justify-center max-lg:gap-8 md:max-lg:min-h-[calc(100dvh-6rem)] md:max-lg:gap-10 lg:order-1 lg:block lg:min-h-0 lg:text-left">
+              <motion.div className="max-lg:w-full" style={{ x: nudgeX, y: nudgeY }}>
                 <motion.p
                   className="text-muted text-sm font-medium tracking-wide md:text-base"
                   initial={{ opacity: 0, y: slideY }}
@@ -493,6 +515,14 @@ function HeroSectionMotion({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCl
                   </motion.a>
                 </motion.div>
               </motion.div>
+              <div className="lg:hidden">
+                <HeroScrollDown
+                  reducedMotion={reducedMotion}
+                  onHashNav={onHashNav}
+                  hidden={cliOpen}
+                  inline
+                />
+              </div>
             </div>
 
             <HeroIdeColumn
@@ -503,11 +533,13 @@ function HeroSectionMotion({ cliOpenFromRoute, onCliRouteConsumed }: HeroRouteCl
           </div>
         </Container>
       </div>
-      <HeroScrollDown
-        reducedMotion={reducedMotion}
-        onHashNav={onHashNav}
-        hidden={cliOpen}
-      />
+      <div className="hidden lg:block">
+        <HeroScrollDown
+          reducedMotion={reducedMotion}
+          onHashNav={onHashNav}
+          hidden={cliOpen}
+        />
+      </div>
     </section>
   )
 }
