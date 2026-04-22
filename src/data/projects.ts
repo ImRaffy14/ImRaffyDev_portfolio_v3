@@ -6,6 +6,7 @@ export type Project = {
   description: string
   coverImage: string
   gallery: string[]
+  certificationImages?: string[]
   highlights: string[]
   techStack: string[]
 }
@@ -15,76 +16,105 @@ const img = (seed: string, w = 1200, h = 675) =>
 
 export const projects: Project[] = [
   {
-    slug: 'orbit-dashboard',
-    title: 'Orbit Dashboard',
-    year: 2025,
+    slug: 'jjm-manufacturing-finance-management-system',
+    title: 'JJM Manufacturing Finance Management System',
+    year: 2024,
     shortDescription:
-      'Operations console for monitoring fleets of edge devices with live charts and alerts.',
+      'A capstone and client-based project designed to streamline financial operations for a manufacturing firm. Key features include automated financial tracking and a machine learning-powered AI for anomaly detection to enhance accuracy and security.',
     description:
-      'Orbit is a placeholder operations dashboard concept. It aggregates telemetry from distributed nodes, surfaces anomaly scores, and lets operators drill into incident timelines. The UI prioritizes scanability: dense tables, sparkline summaries, and a unified search palette. This write-up describes goals, constraints, and technical tradeoffs for a production build.',
-    coverImage: img('orbit-dashboard-cover'),
+      'A capstone and client-based project designed to streamline financial operations for a manufacturing firm. Key features include automated financial tracking and a machine learning-powered AI for anomaly detection to enhance accuracy and security.\n\n(This project is able us to showcase this in a organized by the Singapore institute of Multidisciplinary Professions and Ascendence Asia International Research Institute)',
+    coverImage: img('jjm-manufacturing-finance-management-system-cover'),
     gallery: [
-      img('orbit-dashboard-g1'),
-      img('orbit-dashboard-g2'),
-      img('orbit-dashboard-g3'),
+      img('jjm-manufacturing-finance-management-system-g1'),
+      img('jjm-manufacturing-finance-management-system-g2'),
+      img('jjm-manufacturing-finance-management-system-g3'),
+    ],
+    certificationImages: [
+      img('jjm-manufacturing-finance-management-system-certification-1'),
+      img('jjm-manufacturing-finance-management-system-certification-2'),
     ],
     highlights: [
-      'Sub-second refresh for KPI tiles with incremental polling',
-      'Role-aware views with saved filter presets per team',
-      'Export pipelines for weekly executive PDF summaries',
+      'Automated financial tracking system',
+      'AI-powered anomaly detection for accuracy and security',
+      'Real-world manufacturing finance optimization',
+      'Academic and institutional showcase project (Singapore institute + Ascendence Asia)',
     ],
-    techStack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'TanStack Query'],
+    techStack: ['React', 'Node JS', 'Mongo DB', 'TensorFlow', 'tailwind', 'express'],
   },
   {
-    slug: 'ledger-lite',
-    title: 'Ledger Lite',
+    slug: 'pilot-area-community-chapter-system',
+    title: 'Pilot Area Community Chapter System',
+    year: 2022,
+    shortDescription:
+      'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
+    description:
+      'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
+    coverImage: img('pilot-area-community-chapter-system-cover'),
+    gallery: [
+      img('pilot-area-community-chapter-system-g1'),
+      img('pilot-area-community-chapter-system-g2'),
+      img('pilot-area-community-chapter-system-g3'),
+    ],
+    highlights: [
+      'Resident database management system',
+      'Financial tracking and monitoring',
+      'Attendance automation system',
+      'Administrative workflow optimization',
+    ],
+    techStack: ['HTML', 'CSS', 'BOOTSTRAP', 'PHP', 'MYSQL', 'JAVASCRIPT'],
+  },
+  {
+    slug: 'nodado-finance-management-system',
+    title: 'Nodado Finance Management System',
     year: 2024,
     shortDescription:
-      'Minimal double-entry bookkeeping API and admin UI for small studios.',
+      'A custom financial management system developed for Nodado General Hospital to streamline and centralize financial operations. The system includes an AI-integrated chatbot capable of summarizing expenses, revenue, sales, and overall financial data in real time, enabling faster insights and better decision-making. It also handles budgeting, expense tracking, and financial reporting, improving overall efficiency, accuracy, and transparency in hospital fund management.',
     description:
-      'Ledger Lite is a fictional accounting toolkit for creative shops. It models accounts, journal lines, and reporting periods with strict validation. The admin UI walks bookkeepers through reconciliation flows and highlights discrepancies before close. Placeholder copy stands in for case studies and client names.',
-    coverImage: img('ledger-lite-cover'),
-    gallery: [img('ledger-lite-g1'), img('ledger-lite-g2')],
-    highlights: [
-      'Immutable journal postings with compensating entries only',
-      'Multi-currency support with daily rate snapshots',
-      'Audit trail export compatible with external compliance tools',
+      'A custom financial management system developed for Nodado General Hospital to streamline and centralize financial operations. The system includes an AI-integrated chatbot capable of summarizing expenses, revenue, sales, and overall financial data in real time, enabling faster insights and better decision-making. It also handles budgeting, expense tracking, and financial reporting, improving overall efficiency, accuracy, and transparency in hospital fund management.',
+    coverImage: img('nodado-finance-management-system-cover'),
+    gallery: [
+      img('nodado-finance-management-system-g1'),
+      img('nodado-finance-management-system-g2'),
+      img('nodado-finance-management-system-g3'),
     ],
-    techStack: ['Node.js', 'PostgreSQL', 'GraphQL', 'React', 'Zod'],
+    highlights: [
+      'AI-powered chatbot for real-time financial summaries (expenses, revenue, sales)',
+      'Automated budget and expense tracking system',
+      'Centralized financial reporting and data management',
+      'Improved decision-making through instant financial insights',
+      'Enhanced transparency and operational efficiency in hospital fund management',
+    ],
+    techStack: ['React', 'Node JS', 'Mongo DB', 'Express', 'Tailwind'],
   },
   {
-    slug: 'northwind-mobile',
-    title: 'Northwind Mobile',
-    year: 2024,
+    slug: 'slate-hr-management-system',
+    title: 'SLATE HR Management System',
+    year: 2026,
     shortDescription:
-      'Field sales companion for offline catalogs, quotes, and signature capture.',
+      'AI-integrated HR performance platform designed to monitor, evaluate, and enhance employee performance within an organization. SLATE-HR helps HR teams and managers track progress, identify high-performing employees, and make data-driven promotion decisions based on clear performance metrics.\n\nIt leverages AI to deliver intelligent insights into performance trends, enabling more accurate evaluations, early detection of high-potential talent, and more effective performance enhancement strategies.',
     description:
-      'Northwind Mobile imagines a sales rep app that works on patchy connectivity. Reps browse product bundles, assemble quotes, and collect signatures. Sync resolves conflicts with server-wins for pricing and client-wins for notes. Images and screenshots here are placeholders only.',
-    coverImage: img('northwind-mobile-cover'),
-    gallery: [img('northwind-mobile-g1'), img('northwind-mobile-g2'), img('northwind-mobile-g3'), img('northwind-mobile-g4')],
-    highlights: [
-      'Offline-first SQLite cache with background sync',
-      'Camera-based SKU lookup with fuzzy matching',
-      'Biometric lock and per-territory data partitions',
+      'AI-integrated HR performance platform designed to monitor, evaluate, and enhance employee performance within an organization. SLATE-HR helps HR teams and managers track progress, identify high-performing employees, and make data-driven promotion decisions based on clear performance metrics.\n\nIt leverages AI to deliver intelligent insights into performance trends, enabling more accurate evaluations, early detection of high-potential talent, and more effective performance enhancement strategies.',
+    coverImage: img('slate-hr-management-system-cover'),
+    gallery: [
+      img('slate-hr-management-system-g1'),
+      img('slate-hr-management-system-g2'),
+      img('slate-hr-management-system-g3'),
     ],
-    techStack: ['React Native', 'TypeScript', 'Expo', 'SQLite', 'REST'],
-  },
-  {
-    slug: 'pulse-retention',
-    title: 'Pulse Retention',
-    year: 2023,
-    shortDescription:
-      'Lifecycle messaging experiments with cohort dashboards and holdout analysis.',
-    description:
-      'Pulse Retention is a placeholder growth-engineering project. It ties event streams to cohort funnels, runs message experiments, and compares holdout groups. Operators can define guardrails so aggressive tests never blast sensitive segments. All metrics and brands shown are fictitious.',
-    coverImage: img('pulse-retention-cover'),
-    gallery: [img('pulse-retention-g1'), img('pulse-retention-g2')],
     highlights: [
-      'Bayesian early stopping for in-flight experiments',
-      'Consent-aware audience builder with policy tags',
-      'Slack and email digests for experiment owners',
+      'AI-powered HR performance analytics',
+      'Employee evaluation and tracking system',
+      'Data-driven promotion decision support',
+      'Talent identification and performance insights',
     ],
-    techStack: ['Next.js', 'Python', 'BigQuery', 'dbt', 'Airflow'],
+    techStack: [
+      'React',
+      'Typescript',
+      'Tailwind',
+      'Node jS',
+      'Express',
+      'Prisma',
+      'Mongo DB',
+    ],
   },
 ]
 

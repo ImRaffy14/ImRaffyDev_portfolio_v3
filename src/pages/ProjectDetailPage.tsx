@@ -96,6 +96,37 @@ function ProjectGallery({ images }: { images: string[] }) {
   )
 }
 
+function ProjectCertifications({ images }: { images: string[] }) {
+  if (images.length === 0) return null
+
+  return (
+    <section aria-labelledby="certifications-heading">
+      <h2
+        id="certifications-heading"
+        className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl"
+      >
+        Certifications
+      </h2>
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {images.map((src, i) => (
+          <div
+            key={`${src}-${i}`}
+            className="overflow-hidden rounded-xl border border-border/60 bg-foreground/2"
+          >
+            <img
+              src={src}
+              alt={`Certification image ${i + 1}`}
+              className="aspect-video w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const reducedMotion = usePrefersReducedMotion()
@@ -154,6 +185,10 @@ export function ProjectDetailPage() {
             </h2>
             <ProjectGallery key={project.slug} images={project.gallery} />
           </section>
+
+          {project.certificationImages && project.certificationImages.length > 0 ? (
+            <ProjectCertifications images={project.certificationImages} />
+          ) : null}
 
           <section aria-labelledby="highlights-heading">
             <h2
@@ -263,6 +298,16 @@ export function ProjectDetailPage() {
           </h2>
           <ProjectGallery key={project.slug} images={project.gallery} />
         </motion.section>
+
+        {project.certificationImages && project.certificationImages.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={t(0.2)}
+          >
+            <ProjectCertifications images={project.certificationImages} />
+          </motion.div>
+        ) : null}
 
         <motion.section
           aria-labelledby="highlights-heading"

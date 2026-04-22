@@ -1,22 +1,20 @@
-/**
- * Placeholder copy for the CLI. Swap with real site/project data later without
- * changing command wiring.
- */
 export const cliAbout = {
   lines: [
     'Raffy Uanan — Full Stack Developer',
-    'Building scalable web & mobile apps with focus on performance, systems, and clarity.',
+    'I’m a Full Stack Developer focused on building scalable, real-time, and user-centered digital experiences.',
+    'With over two years of hands-on experience, I work across the full stack—leveraging modern technologies like MongoDB, Express.js, React, and Node.js to deliver high-performance applications.',
+    'Since 2022, I’ve collaborated with clients to turn ideas into practical, production-ready systems.',
     'Type `projects` for work samples, `experience` for timeline, `contact` to connect.',
   ],
 } as const
 
 export const cliProjects = {
   lines: [
-    'Featured work (placeholder):',
-    '  • Orbit Dashboard — edge ops & live charts',
-    '  • Ledger Lite — bookkeeping API + admin',
-    '  • Northwind Mobile — offline-first sales',
-    '  • Pulse Retention — cohort experiments',
+    'Featured work:',
+    '  • JJM Manufacturing Finance Management System (2024)',
+    '  • Pilot Area Community Chapter System (2022)',
+    '  • Nodado Finance Management System (2024)',
+    '  • SLATE HR Management System (2026)',
     '',
     'Open the Projects section on the main site for full case studies.',
   ],
@@ -24,19 +22,18 @@ export const cliProjects = {
 
 export const cliExperience = {
   lines: [
-    'Work history (placeholder):',
-    '  2023 — Present · Senior Software Engineer · Acme Labs',
-    '    Shipping product surfaces, design systems, and infra glue.',
-    '  2020 — 2023 · Software Engineer · Northwind Digital',
-    '    Full-stack features, API design, and performance passes.',
+    'Work history:',
+    '  2025 — Present · Full Stack Developer · Socia IT Solutions',
+    '  2025 — 2025 · Frontend Developer · Ichico Solutions',
+    '  2022 — Present · Freelance Full-Stack Developer',
     '',
-    'See Experience on the homepage for the real timeline.',
+    'See Experience on the homepage for full details and key achievements.',
   ],
 } as const
 
 export const cliContact = {
   lines: [
-    'Contact (placeholder):',
+    'Contact:',
     '  Email: hello@example.com',
     '  GitHub · LinkedIn · X — links on the main site footer / contact.',
     '',

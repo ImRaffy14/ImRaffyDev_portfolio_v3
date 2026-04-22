@@ -27,11 +27,12 @@ export function skillIconFallbackSrc(slug: string) {
 
 export const about = {
   title: 'About',
-  subtitle: 'Builder, problem-solver, lifelong learner',
+  subtitle:
+    'I’m a Full Stack Developer focused on building scalable, real-time, and user-centered digital experiences.',
   paragraphs: [
-    "I'm a full-stack developer who enjoys turning complex requirements into clear, maintainable systems. I care about performance, DX, and shipping things people actually use.",
-    'Most of my work sits at the intersection of web platforms, APIs, and real-time features—whether that means optimizing queries, hardening auth flows, or polishing UI states.',
-    'Outside of tickets and PRs, I like exploring new tooling, contributing to internal standards, and mentoring where I can.',
+    'With over two years of hands-on experience, I work across the full stack—leveraging modern technologies like MongoDB, Express.js, React, and Node.js to deliver high-performance applications.',
+    'Since 2022, I’ve collaborated with clients to turn ideas into practical, production-ready systems.',
+    'I also bring solid knowledge in server management and system design, allowing me to approach projects with both technical depth and real-world practicality.',
   ],
 } as const
 
@@ -41,24 +42,26 @@ export const skillGroups: SkillGroup[] = [
     id: 'frontend',
     label: 'Frontend',
     skills: [
-      { name: 'JavaScript', slug: 'javascript' },
-      { name: 'TypeScript', slug: 'typescript' },
       { name: 'React', slug: 'react' },
-      { name: 'Next.js', slug: 'nextdotjs' },
-      { name: 'Tailwind CSS', slug: 'tailwindcss' },
-      { name: 'Vite', slug: 'vite' },
-      { name: 'Framer Motion', slug: 'framer' },
+      { name: 'Vue', slug: 'vuedotjs' },
+      { name: 'Tailwind', slug: 'tailwindcss' },
+      { name: 'Bootstrap', slug: 'bootstrap' },
+      { name: 'Html', slug: 'html5' },
+      { name: 'Css', slug: 'css3' },
+      { name: 'javascript', slug: 'javascript' },
+      { name: 'next js', slug: 'nextdotjs' },
+      { name: 'Typescript', slug: 'typescript' },
     ],
   },
   {
     id: 'backend',
     label: 'Backend',
     skills: [
-      { name: 'Node.js', slug: 'nodedotjs' },
+      { name: 'Node js', slug: 'nodedotjs' },
+      { name: 'Express', slug: 'express' },
       { name: 'Laravel', slug: 'laravel' },
       { name: 'PHP', slug: 'php' },
-      { name: 'GraphQL', slug: 'graphql' },
-      { name: 'Express', slug: 'express' },
+      { name: 'Go lang', slug: 'go' },
     ],
   },
   {
@@ -66,9 +69,11 @@ export const skillGroups: SkillGroup[] = [
     label: 'Database',
     skills: [
       { name: 'MySQL', slug: 'mysql' },
-      { name: 'PostgreSQL', slug: 'postgresql' },
-      { name: 'MongoDB', slug: 'mongodb' },
+      { name: 'Mongo DB', slug: 'mongodb' },
       { name: 'Redis', slug: 'redis' },
+      { name: 'Prisma (ORM)', slug: 'prisma' },
+      { name: 'Drizzle (ORM)', slug: 'drizzle' },
+      { name: 'Maria DB', slug: 'mariadb' },
     ],
   },
   {
@@ -77,10 +82,10 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       { name: 'Git', slug: 'git' },
       { name: 'Docker', slug: 'docker' },
-      { name: 'AWS', slug: 'amazonaws' },
-      { name: 'Playwright', slug: 'playwright' },
-      { name: 'React Query', slug: 'reactquery' },
-      { name: 'Zod', slug: 'zod' },
+      { name: 'Aws', slug: 'amazonaws' },
+      { name: 'TensorFlow', slug: 'tensorflow' },
+      { name: 'Linux', slug: 'linux' },
+      { name: 'Nginx', slug: 'nginx' },
     ],
   },
 ]

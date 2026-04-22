@@ -8,7 +8,6 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import {
   motionViewport,
   sectionEyebrowVariants,
-  sectionLeadVariants,
   sectionTitleVariants,
   staggerContainer,
   timelineItemVariants,
@@ -45,10 +44,6 @@ export function WorkExperienceSection() {
             >
               Work experience
             </h2>
-            <p className="text-muted mt-3 max-w-2xl text-base md:text-lg">
-              A structured path through product engineering—placeholder roles you can replace with your
-              real history.
-            </p>
           </div>
 
           <div className="relative mt-14 md:mt-16">
@@ -120,13 +115,6 @@ export function WorkExperienceSection() {
           >
             Work experience
           </motion.h2>
-          <motion.p
-            className="text-muted mt-3 max-w-2xl text-base md:text-lg"
-            variants={sectionLeadVariants(reducedMotion, reducedMotion ? 0 : 0.04)}
-          >
-            A structured path through product engineering—placeholder roles you can replace with your
-            real history.
-          </motion.p>
         </motion.div>
 
         <div ref={trackRef} className="relative mt-14 md:mt-16">
