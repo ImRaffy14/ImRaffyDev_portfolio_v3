@@ -16,10 +16,10 @@ export const site = {
     formEyebrow: 'Drop me a line',
   },
   socials: [
-    { label: 'GitHub', href: 'https://github.com/imraffydev', icon: 'github' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/imraffydev', icon: 'linkedin' },
-    { label: 'X', href: 'https://x.com/imraffydev', icon: 'x' },
-    { label: 'Instagram', href: 'https://www.instagram.com/imraffydev', icon: 'instagram' },
-    { label: 'Email', href: 'mailto:hello@example.com', icon: 'mail' },
+    { label: 'GitHub', href: 'https://github.com/ImRaffy14', icon: 'github' },
+    { label: 'Facebook', href: 'https://www.facebook.com/raffy.uanan.10/', icon: 'facebook' },
+    { label: 'Instagram', href: 'https://www.instagram.com/raffyuanan/', icon: 'instagram' },
+    { label: 'Discord', href: 'https://discord.com/users/i402317453935378445', icon: 'discord' },
+    { label: 'Email', href: 'mailto:raffysolis123@gmail.com', icon: 'mail' },
   ],
 } as const

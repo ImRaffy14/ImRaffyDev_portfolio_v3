@@ -33,11 +33,29 @@ function IconInstagram({ className }: { className?: string }) {
   )
 }
 
+function IconFacebook({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.099 4.388 23.094 10.125 24v-8.438H7.078v-3.489h3.047V9.41c0-3.017 1.792-4.686 4.533-4.686 1.312 0 2.686.235 2.686.235v2.963H15.83c-1.49 0-1.955.93-1.955 1.884v2.267h3.328l-.532 3.489h-2.796V24C19.612 23.094 24 18.099 24 12.073z" />
+    </svg>
+  )
+}
+
+function IconDiscord({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.191.346-.403.81-.553 1.178a18.27 18.27 0 00-6.663 0A12.644 12.644 0 008.116 3a19.736 19.736 0 00-4.433 1.369C.533 9.029-.32 13.58.099 18.067A19.9 19.9 0 005.415 21c.428-.59.811-1.215 1.141-1.876-.627-.237-1.224-.53-1.79-.874.15-.109.297-.222.44-.339 3.449 1.617 7.205 1.617 10.613 0 .144.117.291.23.44.339-.566.344-1.164.637-1.79.874.33.661.713 1.286 1.141 1.876a19.86 19.86 0 005.317-2.933c.491-5.201-.838-9.711-3.194-13.698zM8.02 15.331c-1.037 0-1.89-.944-1.89-2.105s.833-2.105 1.89-2.105c1.069 0 1.91.955 1.89 2.105.001 1.161-.832 2.105-1.89 2.105zm7.96 0c-1.037 0-1.89-.944-1.89-2.105s.833-2.105 1.89-2.105c1.069 0 1.91.955 1.89 2.105 0 1.161-.832 2.105-1.89 2.105z" />
+    </svg>
+  )
+}
+
 const icons = {
   github: IconGithub,
   linkedin: IconLinkedIn,
   x: IconX,
   instagram: IconInstagram,
+  facebook: IconFacebook,
+  discord: IconDiscord,
   mail: Mail,
 } as const
 
