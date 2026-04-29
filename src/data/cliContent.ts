@@ -15,6 +15,7 @@ export const cliProjects = {
     '  • Pilot Area Community Chapter System (2022)',
     '  • Nodado Finance Management System (2024)',
     '  • SLATE HR Management System (2026)',
+    '  • Coaching System | Students Mobile App (2026)',
     '',
     'Open the Projects section on the main site for full case studies.',
   ],
@@ -34,8 +35,8 @@ export const cliExperience = {
 export const cliContact = {
   lines: [
     'Contact:',
-    '  Email: hello@example.com',
-    '  GitHub · LinkedIn · X — links on the main site footer / contact.',
+    '  Email: raffysolis123@gmail.com',
+    '  GitHub · Facebook · Instagram · Discord — links on the SocialDock.',
     '',
     'Use the contact form on the homepage for project inquiries.',
   ],

@@ -32,8 +32,8 @@ export const projects: Project[] = [
       img('v1777466020/jjm_6_lyaavc.png'),
     ],
     certificationImages: [
-      img('jjm-manufacturing-finance-management-system-certification-1'),
-      img('jjm-manufacturing-finance-management-system-certification-2'),
+      img('v1777488358/aba963f4-274d-4969-acf1-8d91dff0775a_iafqe0.jpg'),
+      img('v1777488359/f0a2ad07-201b-453f-a538-03a9cd52d954_sh9tiu.jpg'),
     ],
     highlights: [
       'Automated financial tracking system',
@@ -44,25 +44,36 @@ export const projects: Project[] = [
     techStack: ['React', 'Node JS', 'Mongo DB', 'TensorFlow', 'tailwind', 'express'],
   },
   {
-    slug: 'pilot-area-community-chapter-system',
-    title: 'Pilot Area Community Chapter System',
-    year: 2022,
+    slug: 'coaching-system-students-mobile-app',
+    title: 'Coaching System | Students Mobile App',
+    year: 2026,
     shortDescription:
-      'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
+      'A coaching management platform with a Coach Panel and a mobile Student App, designed to track progress, manage tasks, and improve student performance through structured coaching and peer accountability features.',
+  
     description:
-      'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
-    coverImage: img('v1777466013/pacc_1_nkvvib.png'),
+      'A full-stack coaching system consisting of a web-based Coach Panel and a mobile Student Application. Coaches can manage students, assign tasks, monitor progress, and provide structured guidance through an organized dashboard.\n\nThe Student Mobile App allows users to follow assigned tasks, update progress, and stay aligned with their coaching goals in real-time. It also introduces a Buddy System feature, enabling students to pair up, track each other’s progress, and encourage accountability.\n\nThis social and interactive approach helps improve consistency, motivation, and performance by combining personal coaching with peer support. The system is designed to create a more engaging and collaborative learning environment between coaches and students.',
+  
+    coverImage: img('v1777486877/coach_1_dnvred.jpg'),
+  
     gallery: [
-      img('v1777466013/pacc_3_dxqzlv.png'),
-      img('v1777466014/pacc_2_wr1xgi.png'),
+      img('v1777489316/coach_9_mvmbqc.jpg'),
+      img('v1777489346/coach_10_xkjenv.jpg'),
+      img('v1777489408/coach_11_bjhvcg.jpg'),
+      img('v1777486878/coach_5_j9lw13.jpg'),
+      img('v1777486878/coach_6_ojmqox.jpg'),
+      img('v1777486879/coach_8_mhyyue.jpg'),
     ],
+  
     highlights: [
-      'Resident database management system',
-      'Financial tracking and monitoring',
-      'Attendance automation system',
-      'Administrative workflow optimization',
+      'Coach Panel for student management and progress tracking',
+      'Mobile Student App for task execution and updates',
+      'Real-time progress monitoring and performance insights',
+      'Buddy System for peer accountability and motivation',
+      'Task assignment and structured coaching workflow',
+      'Improved engagement through interactive mobile learning experience',
     ],
-    techStack: ['HTML', 'CSS', 'BOOTSTRAP', 'PHP', 'MYSQL', 'JAVASCRIPT'],
+  
+    techStack: ['React Native', 'Expo', 'Laravel', 'React TypeScript', 'HeidiSQL'],
   },
   {
     slug: 'nodado-finance-management-system',
@@ -95,11 +106,14 @@ export const projects: Project[] = [
       'AI-integrated HR performance platform designed to monitor, evaluate, and enhance employee performance within an organization. SLATE-HR helps HR teams and managers track progress, identify high-performing employees, and make data-driven promotion decisions based on clear performance metrics.\n\nIt leverages AI to deliver intelligent insights into performance trends, enabling more accurate evaluations, early detection of high-potential talent, and more effective performance enhancement strategies.',
     description:
       'AI-integrated HR performance platform designed to monitor, evaluate, and enhance employee performance within an organization. SLATE-HR helps HR teams and managers track progress, identify high-performing employees, and make data-driven promotion decisions based on clear performance metrics.\n\nIt leverages AI to deliver intelligent insights into performance trends, enabling more accurate evaluations, early detection of high-potential talent, and more effective performance enhancement strategies.',
-    coverImage: img('slate-hr-management-system-cover'),
+    coverImage: img('v1777486879/slate_1_yzvchr.jpg'),
     gallery: [
-      img('slate-hr-management-system-g1'),
-      img('slate-hr-management-system-g2'),
-      img('slate-hr-management-system-g3'),
+      img('v1777486879/slate_2_yg13t4.jpg'),
+      img('v1777486879/slate_3_nn9fsv.jpg'),
+      img('v1777486879/slate_5_mq4mvg.jpg'),
+      img('v1777486879/slate_4_mhpvrf.jpg'),
+      img('v1777486879/slate_6_u8umaw.jpg'),
+      img('v1777486880/slate_7_lgbdqy.jpg'),
     ],
     highlights: [
       'AI-powered HR performance analytics',
@@ -116,6 +130,27 @@ export const projects: Project[] = [
       'Prisma',
       'Mongo DB',
     ],
+  },
+  {
+    slug: 'pilot-area-community-chapter-system',
+    title: 'Pilot Area Community Chapter System',
+    year: 2022,
+    shortDescription:
+      'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
+    description:
+      'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
+    coverImage: img('v1777466013/pacc_1_nkvvib.png'),
+    gallery: [
+      img('v1777466013/pacc_3_dxqzlv.png'),
+      img('v1777466014/pacc_2_wr1xgi.png'),
+    ],
+    highlights: [
+      'Resident database management system',
+      'Financial tracking and monitoring',
+      'Attendance automation system',
+      'Administrative workflow optimization',
+    ],
+    techStack: ['HTML', 'CSS', 'BOOTSTRAP', 'PHP', 'MYSQL', 'JAVASCRIPT'],
   },
 ]
 

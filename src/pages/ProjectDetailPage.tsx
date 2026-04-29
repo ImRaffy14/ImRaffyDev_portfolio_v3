@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { ArrowLeft, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react'
+import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom'
 import { Container } from '@/components/ui/Container'
 import { stripUiMotion } from '@/config/debugMotion'
@@ -17,7 +17,132 @@ const galleryNavBtnClass =
 
 const GALLERY_REGION_ID = 'project-detail-gallery'
 
-function ProjectGallery({ images }: { images: string[] }) {
+type OpenImage = (src: string, alt: string) => void
+
+function ImageLightbox({
+  image,
+  onClose,
+}: {
+  image: { src: string; alt: string } | null
+  onClose: () => void
+}) {
+  const [zoom, setZoom] = useState(1)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [isHolding, setIsHolding] = useState(false)
+  const frameRef = useRef<HTMLDivElement | null>(null)
+  const dragStartRef = useRef({ x: 0, y: 0 })
+  const panStartRef = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    if (!image) return
+    setZoom(1)
+    setPan({ x: 0, y: 0 })
+    setIsHolding(false)
+  }, [image])
+
+  useEffect(() => {
+    if (!image) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [image, onClose])
+
+  const zoomIn = () => setZoom((v) => Math.min(3, Number((v + 0.25).toFixed(2))))
+  const zoomOut = () => setZoom((v) => Math.max(1, Number((v - 0.25).toFixed(2))))
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return
+    dragStartRef.current = { x: e.clientX, y: e.clientY }
+    panStartRef.current = pan
+    setIsHolding(true)
+    setZoom(2)
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isHolding || zoom <= 1) return
+    const frame = frameRef.current
+    if (!frame) return
+    const rect = frame.getBoundingClientRect()
+    const maxX = (rect.width * (zoom - 1)) / 2
+    const maxY = (rect.height * (zoom - 1)) / 2
+    const dx = e.clientX - dragStartRef.current.x
+    const dy = e.clientY - dragStartRef.current.y
+    const nextX = Math.max(-maxX, Math.min(maxX, panStartRef.current.x + dx))
+    const nextY = Math.max(-maxY, Math.min(maxY, panStartRef.current.y + dy))
+    setPan({ x: nextX, y: nextY })
+  }
+  const endHold = () => {
+    if (!isHolding) return
+    setIsHolding(false)
+    setZoom(1)
+    setPan({ x: 0, y: 0 })
+  }
+
+  if (!image) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Image preview">
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute right-4 top-4 inline-flex min-h-10 items-center justify-center rounded-full border border-white/25 bg-black/45 p-2 text-white transition-colors hover:bg-black/65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        aria-label="Close image preview"
+      >
+        <X className="size-5" />
+      </button>
+      <div className="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/20 bg-black/50 px-2 py-1 backdrop-blur-sm">
+        <button
+          type="button"
+          onClick={zoomOut}
+          disabled={zoom <= 1}
+          className="pointer-events-auto inline-flex min-h-9 items-center justify-center rounded-md p-2 text-white transition-colors enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Zoom out"
+        >
+          <ZoomOut className="size-4" />
+        </button>
+        <span className="font-mono text-xs text-white tabular-nums">{Math.round(zoom * 100)}%</span>
+        <button
+          type="button"
+          onClick={zoomIn}
+          disabled={zoom >= 3}
+          className="pointer-events-auto inline-flex min-h-9 items-center justify-center rounded-md p-2 text-white transition-colors enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Zoom in"
+        >
+          <ZoomIn className="size-4" />
+        </button>
+      </div>
+      <div
+        ref={frameRef}
+        className={`max-h-full max-w-6xl select-none overflow-hidden rounded-xl border border-white/20 bg-black/35 p-1 ${isHolding ? 'cursor-grabbing' : 'cursor-zoom-in'}`}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endHold}
+        onPointerCancel={endHold}
+        onPointerLeave={endHold}
+        style={{ touchAction: 'none' }}
+        aria-label="Hold left click to zoom and drag image"
+      >
+        <img
+          src={image.src}
+          alt={image.alt}
+          className="max-h-[82vh] w-auto max-w-full select-none origin-center rounded-lg object-contain transition-transform duration-200 ease-out"
+          style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}
+          loading="eager"
+          decoding="async"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          onContextMenu={(e) => e.preventDefault()}
+        />
+      </div>
+    </div>
+  )
+}
+
+function ProjectGallery({ images, onOpenImage }: { images: string[]; onOpenImage: OpenImage }) {
   const [index, setIndex] = useState(0)
   const count = images.length
   const multi = count > 1
@@ -59,9 +184,10 @@ function ProjectGallery({ images }: { images: string[] }) {
         <img
           src={src}
           alt={multi ? `Gallery image ${index + 1} of ${count}` : 'Gallery image'}
-          className="aspect-video w-full object-cover"
+          className="aspect-video w-full cursor-zoom-in object-cover"
           loading="lazy"
           decoding="async"
+          onClick={() => onOpenImage(src, multi ? `Gallery image ${index + 1} of ${count}` : 'Gallery image')}
         />
         {multi ? (
           <>
@@ -96,7 +222,7 @@ function ProjectGallery({ images }: { images: string[] }) {
   )
 }
 
-function ProjectCertifications({ images }: { images: string[] }) {
+function ProjectCertifications({ images, onOpenImage }: { images: string[]; onOpenImage: OpenImage }) {
   if (images.length === 0) return null
 
   return (
@@ -109,18 +235,21 @@ function ProjectCertifications({ images }: { images: string[] }) {
       </h2>
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {images.map((src, i) => (
-          <div
+          <button
             key={`${src}-${i}`}
+            type="button"
             className="overflow-hidden rounded-xl border border-border/60 bg-foreground/2"
+            onClick={() => onOpenImage(src, `Certification image ${i + 1}`)}
+            aria-label={`Open certification image ${i + 1}`}
           >
             <img
               src={src}
               alt={`Certification image ${i + 1}`}
-              className="aspect-video w-full object-cover"
+              className="aspect-video w-full cursor-zoom-in object-cover"
               loading="lazy"
               decoding="async"
             />
-          </div>
+          </button>
         ))}
       </div>
     </section>
@@ -132,10 +261,13 @@ export function ProjectDetailPage() {
   const reducedMotion = usePrefersReducedMotion()
   const location = useLocation()
   const project = slug ? getProjectBySlug(slug) : undefined
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null)
 
   const origin = (location.state as { projectOrigin?: ProjectOrigin } | null)?.projectOrigin
   const backTo = origin === 'archive' ? '/projects' : '/#projects'
   const backLabel = origin === 'archive' ? 'Back to all projects' : 'Back to featured work'
+  const openImage = useCallback((src: string, alt: string) => setLightboxImage({ src, alt }), [])
+  const closeImage = useCallback(() => setLightboxImage(null), [])
 
   if (!project) {
     return <Navigate to="/#projects" replace />
@@ -183,11 +315,11 @@ export function ProjectDetailPage() {
             >
               Gallery
             </h2>
-            <ProjectGallery key={project.slug} images={project.gallery} />
+            <ProjectGallery key={project.slug} images={project.gallery} onOpenImage={openImage} />
           </section>
 
           {project.certificationImages && project.certificationImages.length > 0 ? (
-            <ProjectCertifications images={project.certificationImages} />
+            <ProjectCertifications images={project.certificationImages} onOpenImage={openImage} />
           ) : null}
 
           <section aria-labelledby="highlights-heading">
@@ -223,6 +355,7 @@ export function ProjectDetailPage() {
             </ul>
           </section>
         </Container>
+        <ImageLightbox image={lightboxImage} onClose={closeImage} />
       </article>
     )
   }
@@ -296,7 +429,7 @@ export function ProjectDetailPage() {
           <h2 id="gallery-heading" className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl">
             Gallery
           </h2>
-          <ProjectGallery key={project.slug} images={project.gallery} />
+          <ProjectGallery key={project.slug} images={project.gallery} onOpenImage={openImage} />
         </motion.section>
 
         {project.certificationImages && project.certificationImages.length > 0 ? (
@@ -305,7 +438,7 @@ export function ProjectDetailPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={t(0.2)}
           >
-            <ProjectCertifications images={project.certificationImages} />
+            <ProjectCertifications images={project.certificationImages} onOpenImage={openImage} />
           </motion.div>
         ) : null}
 
@@ -346,6 +479,7 @@ export function ProjectDetailPage() {
           </ul>
         </motion.section>
       </Container>
+      <ImageLightbox image={lightboxImage} onClose={closeImage} />
     </article>
   )
 }
