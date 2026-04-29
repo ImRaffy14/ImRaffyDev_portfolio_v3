@@ -11,8 +11,8 @@ export type Project = {
   techStack: string[]
 }
 
-const img = (seed: string, w = 1200, h = 675) =>
-  `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`
+const img = (seed: string) =>
+  `https://res.cloudinary.com/dpyhkumle/image/upload/${seed}`
 
 export const projects: Project[] = [
   {
@@ -23,11 +23,13 @@ export const projects: Project[] = [
       'A capstone and client-based project designed to streamline financial operations for a manufacturing firm. Key features include automated financial tracking and a machine learning-powered AI for anomaly detection to enhance accuracy and security.',
     description:
       'A capstone and client-based project designed to streamline financial operations for a manufacturing firm. Key features include automated financial tracking and a machine learning-powered AI for anomaly detection to enhance accuracy and security.\n\n(This project is able us to showcase this in a organized by the Singapore institute of Multidisciplinary Professions and Ascendence Asia International Research Institute)',
-    coverImage: img('jjm-manufacturing-finance-management-system-cover'),
+    coverImage: img('v1777466014/jjm_1_p4hpo0.png'),
     gallery: [
-      img('jjm-manufacturing-finance-management-system-g1'),
-      img('jjm-manufacturing-finance-management-system-g2'),
-      img('jjm-manufacturing-finance-management-system-g3'),
+      img('v1777466017/jjm_3_ombw7p.png'),
+      img('v1777466014/jjm_2_brulu3.png'),
+      img('v1777466018/jjm_4_agjpmk.png'),
+      img('v1777466019/jjm_5_zslgx3.png'),
+      img('v1777466020/jjm_6_lyaavc.png'),
     ],
     certificationImages: [
       img('jjm-manufacturing-finance-management-system-certification-1'),
@@ -49,11 +51,10 @@ export const projects: Project[] = [
       'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
     description:
       'A private system built to manage residents, funds, and attendance for our community chapter. It streamlines administrative tasks with features like resident database management, financial tracking, and attendance monitoring—showcasing my ability to develop tailored, efficient solutions.',
-    coverImage: img('pilot-area-community-chapter-system-cover'),
+    coverImage: img('v1777466013/pacc_1_nkvvib.png'),
     gallery: [
-      img('pilot-area-community-chapter-system-g1'),
-      img('pilot-area-community-chapter-system-g2'),
-      img('pilot-area-community-chapter-system-g3'),
+      img('v1777466013/pacc_3_dxqzlv.png'),
+      img('v1777466014/pacc_2_wr1xgi.png'),
     ],
     highlights: [
       'Resident database management system',
@@ -71,11 +72,11 @@ export const projects: Project[] = [
       'A custom financial management system developed for Nodado General Hospital to streamline and centralize financial operations. The system includes an AI-integrated chatbot capable of summarizing expenses, revenue, sales, and overall financial data in real time, enabling faster insights and better decision-making. It also handles budgeting, expense tracking, and financial reporting, improving overall efficiency, accuracy, and transparency in hospital fund management.',
     description:
       'A custom financial management system developed for Nodado General Hospital to streamline and centralize financial operations. The system includes an AI-integrated chatbot capable of summarizing expenses, revenue, sales, and overall financial data in real time, enabling faster insights and better decision-making. It also handles budgeting, expense tracking, and financial reporting, improving overall efficiency, accuracy, and transparency in hospital fund management.',
-    coverImage: img('nodado-finance-management-system-cover'),
+    coverImage: img('v1777466013/nodado_1_uzhib9.png'),
     gallery: [
-      img('nodado-finance-management-system-g1'),
-      img('nodado-finance-management-system-g2'),
-      img('nodado-finance-management-system-g3'),
+      img('v1777466012/nodado_3_shqg2f.png'),
+      img('v1777466012/nodado_2_szuvgr.png'),
+      img('v1777466012/nodado_4_gzlgxi.png'),
     ],
     highlights: [
       'AI-powered chatbot for real-time financial summaries (expenses, revenue, sales)',
