@@ -1,0 +1,138 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-muted: var(--accent-muted);
+}
+
+@layer base {
+  :root {
+    --bg: #f4f4f5;
+    --fg: #0f172a;
+    --muted: #64748b;
+    --border: color-mix(in srgb, var(--fg) 10%, transparent);
+    --accent: #2563eb;
+    --accent-muted: color-mix(in srgb, var(--accent) 32%, transparent);
+    --hero-grid-line: color-mix(in srgb, var(--fg) 6%, transparent);
+  }
+
+  html.dark {
+    --bg: #0a0a0a;
+    --fg: #fafafa;
+    --muted: #a1a1aa;
+    --border: color-mix(in srgb, white 10%, transparent);
+    --accent: #60a5fa;
+    --accent-muted: color-mix(in srgb, var(--accent) 28%, transparent);
+    --hero-grid-line: color-mix(in srgb, white 5%, transparent);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    position: relative;
+    scroll-behavior: smooth;
+    scroll-padding-top: -7rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    position: relative;
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: var(--fg);
+    caret-color: var(--fg);
+    -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+    transition: background-color 99999s ease-out;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer utilities {
+  @keyframes cli-caret-blink {
+    0%,
+    45% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0.12;
+    }
+  }
+
+  .animate-cli-caret {
+    animation: cli-caret-blink 1.05s steps(1, end) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-cli-caret {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}
