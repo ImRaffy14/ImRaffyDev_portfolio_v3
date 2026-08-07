@@ -4,8 +4,8 @@ export const site = {
   hero: {
     greeting: 'Hi, I am',
     headline: 'Raffy Uanan',
-    role: 'A Full Stack Developer',
-    tagline: 'I build scalable, real-time web and mobile applications with modern full-stack technologies, focused on performance, systems, and business logic',
+    role: 'A Full Stack Developer & Aspiring AI Engineer',
+    tagline: 'I build scalable, real-time web and mobile applications with modern full-stack technologies—and I’m now moving into AI Engineering, working with LLMs, AI tools, and automation to build smarter systems',
   },
   contact: {
     eyebrow: 'Contact',

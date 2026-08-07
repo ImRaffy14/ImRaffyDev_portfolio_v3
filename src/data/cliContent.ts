@@ -1,9 +1,9 @@
 export const cliAbout = {
   lines: [
-    'Raffy Uanan — Full Stack Developer',
-    'I’m a Full Stack Developer focused on building scalable, real-time, and user-centered digital experiences.',
-    'With over two years of hands-on experience, I work across the full stack—leveraging modern technologies like MongoDB, Express.js, React, and Node.js to deliver high-performance applications.',
-    'Since 2022, I’ve collaborated with clients to turn ideas into practical, production-ready systems.',
+    'Raffy Uanan — Full Stack Developer & Aspiring AI Engineer',
+    'I’m a Full Stack Developer transitioning into AI Engineering, building scalable, real-time systems while going deeper into LLMs, AI tooling, and automation.',
+    'I work across the full stack with MongoDB, Express.js, React, and Node.js, plus server management and system design.',
+    'Claude is a core part of my dev workflow, and I use Obsidian to store notes and per-project context.',
     'Type `projects` for work samples, `experience` for timeline, `contact` to connect.',
   ],
 } as const
@@ -24,8 +24,8 @@ export const cliProjects = {
 export const cliExperience = {
   lines: [
     'Work history:',
-    '  2025 — Present · Full Stack Developer · Socia IT Solutions',
-    '  2025 — 2025 · Frontend Developer · Ichico Solutions',
+    '  2025 — Present · Senior Full Stack Developer · Socia IT Solutions',
+    '  2025 — 2025 · Intern Front End Developer · Ichico Solutions',
     '  2022 — Present · Freelance Full-Stack Developer',
     '',
     'See Experience on the homepage for full details and key achievements.',

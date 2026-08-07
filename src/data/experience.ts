@@ -12,22 +12,22 @@ export type ExperienceItem = {
 export const experienceItems: ExperienceItem[] = [
   {
     id: 'socia-it-solutions',
-    role: 'Full Stack Developer',
+    role: 'Senior Full Stack Developer',
     company: 'Socia IT Solutions',
     start: '2025',
     end: 'Present',
     summary:
-      'Managed both frontend and backend development, including partial server-side operations using AWS (EC2 and S3). Assisted in leading the development team by handling ticketing, code reviews, and task/task management to ensure smooth project execution.',
+      'Lead full stack development across frontend, backend, and DevOps—driving the team’s workflow while owning server-side infrastructure on AWS to keep projects shipping reliably.',
     bullets: [
-      'Developed and maintained scalable business systems tailored for operational needs',
-      'Built and contributed to a real-time streaming platform with a focus on performance and user experience',
-      'Supported server-side infrastructure using AWS services (EC2 and S3) for deployment and storage',
-      'Played a key role in team coordination, including code review and task distribution to improve development workflow',
+      'Lead the development team—managing workflow, monitoring progress, and assigning and tracking tasks to keep delivery on schedule',
+      'Own server-side and DevOps infrastructure on AWS, working with EC2, S3, IVS, and EventBridge for event and webhook handling',
+      'Built and scaled a real-time streaming platform with a focus on performance and reliability',
+      'Drive code reviews and engineering standards to raise code quality and team velocity',
     ],
   },
   {
     id: 'ichico-solutions',
-    role: 'Frontend Developer',
+    role: 'Intern Front End Developer',
     company: 'Ichico Solutions',
     start: '2025',
     end: '2025',

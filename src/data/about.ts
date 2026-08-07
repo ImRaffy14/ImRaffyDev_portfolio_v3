@@ -28,11 +28,12 @@ export function skillIconFallbackSrc(slug: string) {
 export const about = {
   title: 'About',
   subtitle:
-    'I’m a Full Stack Developer focused on building scalable, real-time, and user-centered digital experiences.',
+    'I’m a Full Stack Developer transitioning into AI Engineering—building scalable, real-time systems while going deeper into LLMs, AI tooling, and automation.',
   paragraphs: [
-    'With over two years of hands-on experience, I work across the full stack—leveraging modern technologies like MongoDB, Express.js, React, and Node.js to deliver high-performance applications.',
-    'Since 2022, I’ve collaborated with clients to turn ideas into practical, production-ready systems.',
-    'I also bring solid knowledge in server management and system design, allowing me to approach projects with both technical depth and real-world practicality.',
+    'With years of hands-on experience, I work across the full stack—leveraging modern technologies like MongoDB, Express.js, React, and Node.js to deliver high-performance applications, and I bring solid knowledge in server management and system design.',
+    'I’m now focused on AI Engineering—learning how LLMs work under the hood and using AI tools to build smarter workflows and automations that make development faster and more reliable.',
+    'I integrate AI tools into my everyday workflow to work faster and keep my projects well-organized.',
+    'Since 2022, I’ve collaborated with clients to turn ideas into practical, production-ready systems—now with AI woven into how I design and ship them.',
   ],
 } as const
 
@@ -74,6 +75,17 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Prisma (ORM)', slug: 'prisma' },
       { name: 'Drizzle (ORM)', slug: 'drizzle' },
       { name: 'Maria DB', slug: 'mariadb' },
+    ],
+  },
+  {
+    id: 'ai',
+    label: 'AI & Automation',
+    skills: [
+      { name: 'Claude', slug: 'claude' },
+      { name: 'OpenAI', slug: 'openai' },
+      { name: 'n8n', slug: 'n8n' },
+      { name: 'Obsidian', slug: 'obsidian' },
+      { name: 'Python', slug: 'python' },
     ],
   },
   {
