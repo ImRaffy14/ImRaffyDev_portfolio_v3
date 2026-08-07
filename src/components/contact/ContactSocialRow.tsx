@@ -34,9 +34,17 @@ const icons = {
 const btn =
   'flex size-11 items-center justify-center rounded-full border border-border/70 bg-background/80 text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
 
+<<<<<<< HEAD
 /** GitHub, LinkedIn, X only — matches editorial contact layouts. */
 export function ContactSocialRow({ className }: { className?: string }) {
   const items = site.socials.filter((s) => s.icon === 'github' || s.icon === 'linkedin' || s.icon === 'x')
+=======
+const CONTACT_ROW_ICONS = new Set<string>(['github', 'linkedin', 'x'])
+
+/** GitHub, LinkedIn, X only — matches editorial contact layouts. */
+export function ContactSocialRow({ className }: { className?: string }) {
+  const items = site.socials.filter((s) => CONTACT_ROW_ICONS.has(s.icon))
+>>>>>>> c964b290ae9ee60d77ada86de12652afc277201c
 
   return (
     <ul className={cn('flex flex-wrap gap-3', className)} aria-label="Social profiles">
